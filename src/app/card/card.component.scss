@@ -1,0 +1,19 @@
+@import '~src/sass/mixins';
+
+.example-card {
+    text-align: center;
+    max-width: 120px;
+    font-size: 80pt;
+    width: 150px;
+    height: 175px;
+    margin: 20px;
+    
+    .value {
+        @include no-select();
+        padding-top: 20px;
+        cursor: default;
+    }
+    &.selected {
+        background-color: #4dd0e1;
+    }
+}
