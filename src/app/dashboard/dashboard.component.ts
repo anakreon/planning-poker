@@ -1,26 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { RoomService } from '../room.service';
 
-interface Player {
-    avatar: string;
-    name: string;
-}
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
-    public players: Player[] = [{
-        name: 'person One',
-        avatar: 'https://material.angular.io/assets/img/examples/shiba2.jpg'
-    }, {
-        name: 'person Two',
-        avatar: 'https://material.angular.io/assets/img/examples/shiba2.jpg'
-    }, {
-        name: 'person Three',
-        avatar: 'https://material.angular.io/assets/img/examples/shiba2.jpg'
-    }, {
-        name: 'person Four',
-        avatar: 'https://material.angular.io/assets/img/examples/shiba2.jpg'
-    }];
+export class DashboardComponent implements OnInit {
+    createFormGroup: FormGroup;
+    joinFormGroup: FormGroup;
+
+    constructor (private formBuilder: FormBuilder, private router: Router, private roomService: RoomService) {}
+
+    ngOnInit () {
+        this.createFormGroup = this.formBuilder.group({
+            roomCtrl: ['', Validators.required]
+        });
+        this.joinFormGroup = this.formBuilder.group({
+            roomCtrl: ['', Validators.required]
+        });
+    }
+
+    public createRoomClicked () {
+        if (!this.createFormGroup.invalid) {
+            const roomName = this.createFormGroup.value.roomCtrl as string;
+            this.createRoom(roomName);
+        }
+    }
+
+    private createRoom (roomName: string): void {
+        this.roomService.createRoom(roomName).then((roomId) => {
+            this.joinRoom(roomId);
+        });
+    }
+
+    public joinRoomClicked () {
+        if (!this.joinFormGroup.invalid) {
+            const roomId = this.joinFormGroup.value.roomCtrl as string;
+            this.joinRoom(roomId);
+        }
+    }
+
+    private joinRoom (roomId: string): void {
+        this.router.navigate(['/room/' + roomId]);
+    }
 }

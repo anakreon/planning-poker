@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'app-card-container',
@@ -6,12 +6,12 @@ import { Component } from '@angular/core';
     styleUrls: ['./card-container.component.css']
 })
 export class CardContainerComponent {
-
-    public values: number[] = [1, 2, 3, 5, 8, 13, 21, 34];
-    private selectedValue: number = null;
+    @Input() selectedValue: number;
+    @Input() options: number[];
+    @Output() selectRequest: EventEmitter<number> = new EventEmitter<number>();
 
     public selectValue (value: number): void {
-        this.selectedValue = value;
+        this.selectRequest.emit(value);
     }
 
     public isSelected (value: number): boolean {

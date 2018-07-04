@@ -1,0 +1,3 @@
+<div fxLayout="row">
+    <app-card fxFlex="20" *ngFor="let option of options" [value]="option" (click)="selectValue(option)" [isSelected]="isSelected(option)"></app-card>
+</div>
