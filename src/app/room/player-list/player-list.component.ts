@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 
-interface Player {
+export interface Player {
     avatar: string;
     name: string;
+    status: 'online' | 'offline';
 }
 
 @Component({

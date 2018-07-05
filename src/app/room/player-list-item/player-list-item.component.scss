@@ -11,3 +11,16 @@
     height: 40px;
     margin-right: 10px;
 }
+
+.player-name {
+    flex: 1;
+}
+
+.player-status {
+    .green {
+        color: green;
+    }
+    .red {
+        color: red;
+    }
+}

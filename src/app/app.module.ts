@@ -3,10 +3,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { 
+import {
     MatButtonModule, MatCardModule, MatFormFieldModule, MatGridListModule, MatInputModule, MatStepperModule, MatTabsModule, 
     MatToolbarModule
 } from '@angular/material';
@@ -26,6 +27,7 @@ import { NavbarComponent } from './navbar/navbar.component';
         BrowserAnimationsModule,
         ReactiveFormsModule,
         AngularFireModule.initializeApp(environment.firebase),
+        AngularFireDatabaseModule,
         AngularFirestoreModule,
         AngularFireStorageModule,
         AngularFireAuthModule,

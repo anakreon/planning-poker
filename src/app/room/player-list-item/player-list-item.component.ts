@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Player } from '../player-list/player-list.component';
 
 @Component({
     selector: 'app-player-list-item',
@@ -6,5 +7,5 @@ import { Component, OnInit, Input } from '@angular/core';
     styleUrls: ['./player-list-item.component.scss']
 })
 export class PlayerListItemComponent {
-    @Input('player') public player: { avatar: string, name: string };
+    @Input('player') public player: Player;
 }

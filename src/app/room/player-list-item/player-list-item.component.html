@@ -1,6 +1,10 @@
 <li class="player-list-item">
-    <img [src]="player.avatar" class="avatar" />
+    <img src="https://material.angular.io/assets/img/examples/shiba2.jpg" class="avatar" />
     <div class="player-name">
         {{player.name}}
+    </div>
+    <div class="player-status">
+        <i *ngIf="player.status" class="material-icons green">sync</i>
+        <i *ngIf="!player.status" class="material-icons red">sync_problem</i>
     </div>
 </li>
