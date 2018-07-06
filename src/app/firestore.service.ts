@@ -77,7 +77,7 @@ export class FirestoreService {
     }
 
     private deleteDocumentForReferenceRoot (referenceRoot: ReferenceRoot, collectionName: string, documentId: string) {
-        const document = this.getDocumentReference(this.firestore, collectionName, documentId);
+        const document = this.getDocumentReference(referenceRoot, collectionName, documentId);
         return document.delete();
     }
 

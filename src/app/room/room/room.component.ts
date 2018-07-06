@@ -16,7 +16,9 @@ export class RoomComponent implements OnInit {
     public playerName: string;
     public playerId: string;
 
-    constructor (private route: ActivatedRoute, private roomService: RoomService, public dialog: MatDialog, private masterService: MasterService) {}
+    constructor (
+        private route: ActivatedRoute, private roomService: RoomService, public dialog: MatDialog, private masterService: MasterService
+    ) {}
 
     ngOnInit () {
         this.room = this.route.snapshot.data.room;
@@ -26,7 +28,9 @@ export class RoomComponent implements OnInit {
                 this.playerId = playerId;
             });
         });
-        this.masterService.removeOfflinePlayers(this.room.id);
+        this.masterService.runMasterFunctions(this.room.id).subscribe((didMaintenance) => {
+            console.log('cleaned players: ', didMaintenance);
+        });
     }
 
     private getPlayerName (): Promise<string> {
