@@ -8,7 +8,7 @@ import { combineLatest, Observable, of } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export class MasterService {
+export class RoomMasterService {
 
     constructor (
         private firestoreService: FirestoreService, private roomService: RoomService, private playerStatusService: PlayerStatusService
@@ -17,11 +17,9 @@ export class MasterService {
     public runMasterFunctions (roomId: string) {
         return this.shouldHandleMasterFunctions().pipe(
             filter((shouldHandle: boolean) => shouldHandle),
-            switchMap((shouldHandle: boolean) => {
-                return combineLatest(
-                    this.removeOfflinePlayers(roomId)
-                );
-            })
+            switchMap(() => combineLatest(
+                this.removeOfflinePlayers(roomId)
+            ))
         );
     }
 
@@ -40,11 +38,9 @@ export class MasterService {
 
     private removeOfflinePlayer (roomId: string, playerId: string): Observable<void> {
         return this.playerStatusService.getPlayerOnlineStatus(playerId).pipe(
-            debounceTime(1000),
+            debounceTime(10000),
             filter((status: string) => !status),
-            switchMap(() => {
-                return this.firestoreService.deleteNestedDocument('rooms', roomId, 'players', playerId);
-            })
+            switchMap(() => this.firestoreService.deleteNestedDocument('rooms', roomId, 'players', playerId))
         );
     }
 }

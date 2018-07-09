@@ -1,5 +1,6 @@
 .playerlist {
     width: 300px;
+    min-height: 100px;
 }
 .list-group {
     padding-left: 0px;

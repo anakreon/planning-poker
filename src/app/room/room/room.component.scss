@@ -1,0 +1,15 @@
+h1 {
+    margin: 1em;
+}
+
+.room-wrapper {
+    display: flex;
+
+    .cards {
+        flex: 3;
+    }
+
+    .players {
+        flex: 1;
+    }
+}

@@ -1,9 +1,12 @@
 <div *ngIf="playerId">
-    <div>Room name: {{ room.name }}</div>
-    <div>Player name: {{ playerName }}</div>
-    <app-room-player-list [roomId]="room.id"></app-room-player-list>
+    <h1>{{ room.name }}</h1>
+    <button mat-button (click)="toggleCards()">Toggle Cards</button>
+    <div class="room-wrapper">
+        <div class="cards">
+            <app-room-cards [options]="cardOptions" [canChangeSelection]="canChangeSelection"></app-room-cards>
+        </div>
+        <div class="players">
+            <app-room-player-list [roomId]="room.id"></app-room-player-list>
+        </div>
+    </div>
 </div>
-<!--
-    
-    <app-card-container (selectRequest)="selectCardValue($event)" [selectedValue]="selectedCardValue" [options]="cardOptions"></app-card-container>
--->

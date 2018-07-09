@@ -1,36 +1,51 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Room } from '../../room.service';
 import { RoomService } from '../../room.service';
 import { MatDialog } from '@angular/material';
 import { PlayerNameDialogComponent } from '../player-name-dialog/player-name-dialog.component';
-import { MasterService } from '../../master.service';
+import { RoomMasterService } from '../../room-master.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-room',
     templateUrl: './room.component.html',
-    styleUrls: ['./room.component.css']
+    styleUrls: ['./room.component.scss']
 })
-export class RoomComponent implements OnInit {
+export class RoomComponent implements OnInit, OnDestroy {
     public room: Room;
     public playerName: string;
     public playerId: string;
+    public cardOptions: number[] = [1, 2, 3, 5, 8, 13, 21, 34];
+    public canChangeSelection = false;
+
+    private masterFunctionsSubscription: Subscription;
 
     constructor (
-        private route: ActivatedRoute, private roomService: RoomService, public dialog: MatDialog, private masterService: MasterService
+        private route: ActivatedRoute, private roomService: RoomService, public dialog: MatDialog, private router: Router,
+        private roomMasterService: RoomMasterService
     ) {}
 
     ngOnInit () {
         this.room = this.route.snapshot.data.room;
         this.getPlayerName().then((playerName: string) => {
             this.playerName = playerName;
-            this.addPlayerToRoom(playerName).then((playerId: string) => {
-                this.playerId = playerId;
-            });
+            this.addPlayerToRoom(playerName)
+                .then((playerId: string) => {
+                    this.playerId = playerId;
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.router.navigate(['/dashboard/']);
+                });
         });
-        this.masterService.runMasterFunctions(this.room.id).subscribe((didMaintenance) => {
+        this.masterFunctionsSubscription = this.roomMasterService.runMasterFunctions(this.room.id).subscribe((didMaintenance) => {
             console.log('cleaned players: ', didMaintenance);
         });
+    }
+
+    ngOnDestroy () {
+        this.masterFunctionsSubscription.unsubscribe();;
     }
 
     private getPlayerName (): Promise<string> {
@@ -53,14 +68,8 @@ export class RoomComponent implements OnInit {
         return dialogRef.afterClosed().toPromise();
     }
 
-    /*
-
-    public cardOptions: number[] = [1, 2, 3, 5, 8, 13, 21, 34];
-
-    public selectedCardValue: number = null;
-
-    public selectCardValue (value: number): void {
-        this.selectedCardValue = value;
-    }*/
+    public toggleCards () {
+        this.canChangeSelection = !this.canChangeSelection;
+    }
 
 }

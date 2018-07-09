@@ -14,6 +14,7 @@ import { PlayerListComponent } from './player-list/player-list.component';
 import { PlayerListItemComponent } from './player-list-item/player-list-item.component';
 import { PlayerNameDialogComponent } from './player-name-dialog/player-name-dialog.component';
 import { RoomPlayerListComponent } from './room-player-list/room-player-list.component';
+import { RoomCardsComponent } from './room-cards/room-cards.component';
 
 @NgModule({
     imports: [
@@ -35,7 +36,8 @@ import { RoomPlayerListComponent } from './room-player-list/room-player-list.com
         PlayerListComponent,
         PlayerListItemComponent,
         PlayerNameDialogComponent,
-        RoomPlayerListComponent
+        RoomPlayerListComponent,
+        RoomCardsComponent
     ],
     exports: [
         RoomComponent

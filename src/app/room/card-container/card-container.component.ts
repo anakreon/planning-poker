@@ -8,10 +8,13 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class CardContainerComponent {
     @Input() selectedValue: number;
     @Input() options: number[];
+    @Input() canChangeSelection: boolean;
     @Output() selectRequest: EventEmitter<number> = new EventEmitter<number>();
 
     public selectValue (value: number): void {
-        this.selectRequest.emit(value);
+        if (this.canChangeSelection) {
+            this.selectRequest.emit(value);
+        }
     }
 
     public isSelected (value: number): boolean {

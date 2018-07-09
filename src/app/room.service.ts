@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { FirestoreService, FirestoreObject } from './firestore.service';
 import { Observable, combineLatest } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, first, take } from 'rxjs/operators';
 import { PlayerStatusService } from './player-status.service';
 
 export interface Room extends FirestoreObject {
     name: string;
+    createdDate: {
+        seconds: number;
+        nanoseconds: number;
+    };
 }
 
 export interface Player extends FirestoreObject {
@@ -24,9 +28,10 @@ export class RoomService {
     constructor (private firestoreService: FirestoreService, private playerStatusService: PlayerStatusService) {}
 
     public createRoom (roomName: string): Promise<string> {
-        const newRoom: Room = {
+        const newRoom = {
             id: null,
-            name: roomName
+            name: roomName,
+            createdDate: new Date()
         };
         return this.firestoreService.addDocument('rooms', newRoom);
     }
@@ -40,10 +45,15 @@ export class RoomService {
             id: null,
             name: playerName
         };
-        return this.firestoreService.addNestedDocument('rooms', roomId, 'players', newPlayer).then((playerId: string) => {
-            this.playerStatusService.trackPlayerOnline(playerId);
-            return playerId;
-        });
+        return this.getRoom(roomId)
+            .pipe(take(1))
+            .toPromise()
+            .then(() => {
+                return this.firestoreService.addNestedDocument('rooms', roomId, 'players', newPlayer).then((playerId: string) => {
+                    this.playerStatusService.trackPlayerOnline(playerId);
+                    return playerId;
+                });
+            });
     }
 
     public getPlayersInRoom (roomId: string): Observable<Player[]> {

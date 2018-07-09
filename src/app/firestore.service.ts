@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction, Action, DocumentSnapshot, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore, DocumentChangeAction, Action, DocumentSnapshot, AngularFirestoreDocument, QuerySnapshot } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -76,7 +76,18 @@ export class FirestoreService {
         return this.deleteDocumentForReferenceRoot(parentDocument, collectionName, documentId);
     }
 
-    private deleteDocumentForReferenceRoot (referenceRoot: ReferenceRoot, collectionName: string, documentId: string) {
+    public deleteNestedCollection (parentCollectionName: string, parentDocumentId: string, collectionName: string): Promise<void> {
+        const parentDocument = this.getDocumentReference(this.firestore, parentCollectionName, parentDocumentId);
+        return parentDocument.collection(collectionName).ref.get().then((snapshot: QuerySnapshot<FirestoreObject>) => {
+            const batch = this.firestore.firestore.batch();
+            snapshot.docs.forEach((doc: DocumentSnapshot<FirestoreObject>) => {
+                batch.delete(doc.ref);
+            });
+            return batch.commit();
+        });
+    }
+
+    private deleteDocumentForReferenceRoot (referenceRoot: ReferenceRoot, collectionName: string, documentId: string): Promise<void> {
         const document = this.getDocumentReference(referenceRoot, collectionName, documentId);
         return document.delete();
     }

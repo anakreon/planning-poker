@@ -8,7 +8,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import {
-    MatButtonModule, MatCardModule, MatFormFieldModule, MatGridListModule, MatInputModule, MatStepperModule, MatTabsModule, 
+    MatButtonModule, MatCardModule, MatFormFieldModule, MatGridListModule, MatInputModule, MatStepperModule, MatTabsModule,
     MatToolbarModule
 } from '@angular/material';
 import { RoomModule } from './room/room.module';
