@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { FirestoreService, FirestoreObject } from './firestore.service';
 import { Observable, combineLatest } from 'rxjs';
-import { switchMap, map, first, take } from 'rxjs/operators';
+import { switchMap, map, take } from 'rxjs/operators';
 import { PlayerStatusService } from './player-status.service';
 
 export interface Room extends FirestoreObject {
     name: string;
+    cardOptions: number[];
+    canVote: boolean;
     createdDate: {
         seconds: number;
         nanoseconds: number;
@@ -14,6 +16,7 @@ export interface Room extends FirestoreObject {
 
 export interface Player extends FirestoreObject {
     name: string;
+    role: string;
 }
 
 export interface PlayerWithStatus extends Player {
@@ -27,10 +30,12 @@ export class RoomService {
 
     constructor (private firestoreService: FirestoreService, private playerStatusService: PlayerStatusService) {}
 
-    public createRoom (roomName: string): Promise<string> {
+    public createRoom (roomName: string, cardOptions: number[]): Promise<string> {
         const newRoom = {
             id: null,
             name: roomName,
+            cardOptions,
+            canVote: false,
             createdDate: new Date()
         };
         return this.firestoreService.addDocument('rooms', newRoom);
@@ -41,19 +46,35 @@ export class RoomService {
     }
 
     public addPlayerToRoom (roomId: string, playerName: string): Promise<string> {
-        const newPlayer: Player = {
-            id: null,
-            name: playerName
-        };
-        return this.getRoom(roomId)
-            .pipe(take(1))
-            .toPromise()
-            .then(() => {
+        return this.confirmRoomExists(roomId)
+            .then(() => this.getPlayerRole(roomId))
+            .then((role: string) => {
+                const newPlayer: Player = {
+                    id: null,
+                    name: playerName,
+                    role
+                };
                 return this.firestoreService.addNestedDocument('rooms', roomId, 'players', newPlayer).then((playerId: string) => {
                     this.playerStatusService.trackPlayerOnline(playerId);
                     return playerId;
                 });
-            });
+        });
+    }
+
+    private confirmRoomExists (roomId): Promise<Room> {
+        return this.getRoom(roomId)
+            .pipe(take(1))
+            .toPromise();
+    }
+
+    private getPlayerRole (roomId: string): Promise<string> {
+        return this.getPlayersInRoom(roomId).pipe(take(1)).toPromise().then((players: Player[]) => {
+            if (players.length) {
+                return 'player';
+            } else {
+                return 'moderator';
+            }
+        });
     }
 
     public getPlayersInRoom (roomId: string): Observable<Player[]> {

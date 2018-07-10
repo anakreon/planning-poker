@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
     styleUrls: ['./room-player-list.component.css']
 })
 export class RoomPlayerListComponent implements OnInit {
-    @Input('roomId') roomId: string;
+    @Input() private roomId: string;
 
     public players: Observable<Player[]>;
 

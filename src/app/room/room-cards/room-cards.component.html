@@ -1,6 +1,6 @@
 <app-card-container 
     (selectRequest)="selectCardValue($event)" 
     [selectedValue]="selectedCardValue" 
-    [options]="options" 
-    [canChangeSelection]="canChangeSelection">
+    [options]="(room | async)?.cardOptions" 
+    [canChangeSelection]="(room | async)?.canVote">
 </app-card-container>

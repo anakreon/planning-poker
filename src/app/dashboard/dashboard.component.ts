@@ -31,7 +31,8 @@ export class DashboardComponent implements OnInit {
     }
 
     private createRoom (roomName: string): void {
-        this.roomService.createRoom(roomName).then((roomId) => {
+        const cardOptions: number[] = [1, 2, 3, 5, 8, 13, 21, 34];
+        this.roomService.createRoom(roomName, cardOptions).then((roomId) => {
             this.joinRoom(roomId);
         });
     }

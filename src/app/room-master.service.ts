@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FirestoreService } from './firestore.service';
 import { RoomService, Player } from './room.service';
-import { map, switchMap, filter, debounceTime } from 'rxjs/operators';
+import { map, switchMap, filter, debounceTime, tap, take } from 'rxjs/operators';
 import { PlayerStatusService } from './player-status.service';
 import { combineLatest, Observable, of } from 'rxjs';
 
@@ -18,7 +18,8 @@ export class RoomMasterService {
         return this.shouldHandleMasterFunctions().pipe(
             filter((shouldHandle: boolean) => shouldHandle),
             switchMap(() => combineLatest(
-                this.removeOfflinePlayers(roomId)
+                this.removeOfflinePlayers(roomId),
+                this.assignDifferentModeratorIfNeeded(roomId)
             ))
         );
     }
@@ -29,18 +30,32 @@ export class RoomMasterService {
 
     private removeOfflinePlayers (roomId: string): Observable<void[]> {
         return this.roomService.getPlayersInRoom(roomId).pipe(
-            map((players: Player[]) => players.map((player: Player) => player.id)),
-            switchMap((playerIds: string[]) => {
-                return combineLatest(playerIds.map((playerId: string) => this.removeOfflinePlayer(roomId, playerId)))
-            })
+            switchMap((players: Player[]) => combineLatest(players.map((player: Player) => this.removeOfflinePlayer(roomId, player))))
         );
     }
 
-    private removeOfflinePlayer (roomId: string, playerId: string): Observable<void> {
-        return this.playerStatusService.getPlayerOnlineStatus(playerId).pipe(
+    private removeOfflinePlayer (roomId: string, player: Player): Observable<void> {
+        return this.playerStatusService.getPlayerOnlineStatus(player.id).pipe(
             debounceTime(10000),
             filter((status: string) => !status),
-            switchMap(() => this.firestoreService.deleteNestedDocument('rooms', roomId, 'players', playerId))
+            switchMap(() => this.firestoreService.deleteNestedDocument('rooms', roomId, 'players', player.id))
         );
+    }
+
+    private assignDifferentModeratorIfNeeded (roomId: string): Observable<any> {
+        return this.roomService.getPlayersInRoom(roomId).pipe(
+            filter((players: Player[]) => this.shouldAssignNewModerator(players)),
+            switchMap((players: Player[]) => this.assignNewModerator(roomId, players))
+        );
+    }
+
+    private shouldAssignNewModerator (players: Player[]): boolean {
+        return players.length > 0 && players.every((player: Player) => player.role !== 'moderator');
+    }
+
+    private assignNewModerator (roomId: string, players: Player[]): Promise<void> {
+        const newModerator = players.shift();
+        newModerator.role = 'moderator';
+        return this.firestoreService.updateNestedDocument('rooms', roomId, 'players', newModerator);
     }
 }

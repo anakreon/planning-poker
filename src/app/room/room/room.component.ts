@@ -16,8 +16,6 @@ export class RoomComponent implements OnInit, OnDestroy {
     public room: Room;
     public playerName: string;
     public playerId: string;
-    public cardOptions: number[] = [1, 2, 3, 5, 8, 13, 21, 34];
-    public canChangeSelection = false;
 
     private masterFunctionsSubscription: Subscription;
 
@@ -66,10 +64,6 @@ export class RoomComponent implements OnInit, OnDestroy {
             width: '275px',
         });
         return dialogRef.afterClosed().toPromise();
-    }
-
-    public toggleCards () {
-        this.canChangeSelection = !this.canChangeSelection;
     }
 
 }
