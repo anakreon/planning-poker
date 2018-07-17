@@ -6,18 +6,18 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     styleUrls: ['./card-container.component.css']
 })
 export class CardContainerComponent {
-    @Input() selectedValue: number;
-    @Input() options: number[];
+    @Input() selectedValue: string;
+    @Input() options: string[];
     @Input() canChangeSelection: boolean;
-    @Output() selectRequest: EventEmitter<number> = new EventEmitter<number>();
+    @Output() selectRequest: EventEmitter<string> = new EventEmitter<string>();
 
-    public selectValue (value: number): void {
+    public selectValue (value: string): void {
         if (this.canChangeSelection) {
             this.selectRequest.emit(value);
         }
     }
 
-    public isSelected (value: number): boolean {
+    public isSelected (value: string): boolean {
         return this.selectedValue === value;
     }
 

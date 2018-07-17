@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
-import { FirestoreService } from './firestore.service';
-import { RoomService, Player, Room } from './room.service';
+import { FirestoreService } from '../firestore.service';
+import { Player, Room } from '../room/room.service';
 import { map, switchMap, filter } from 'rxjs/operators';
-import { PlayerStatusService } from './player-status.service';
-import { combineLatest, Observable, of, forkJoin } from 'rxjs';
+import { combineLatest, Observable, of, forkJoin, Observer } from 'rxjs';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppMasterService {
 
-    constructor (
-        private firestoreService: FirestoreService, private roomService: RoomService, private playerStatusService: PlayerStatusService
-    ) {}
+    constructor (private firestoreService: FirestoreService, private firebase: AngularFireDatabase) {}
 
-    public runMasterFunctions (): Observable<any> {
-        return this.shouldHandleMasterFunctions().pipe(
+    public runMasterFunctions (playerId: string): Observable<any> {
+        return this.shouldHandleMasterFunctions(playerId).pipe(
             filter((shouldHandle: boolean) => shouldHandle),
             switchMap(() => combineLatest(
                 this.removeEmptyRooms()
@@ -23,8 +21,16 @@ export class AppMasterService {
         );
     }
 
-    private shouldHandleMasterFunctions (): Observable<boolean> {
-        return of(true);
+    private shouldHandleMasterFunctions (playerId: string): Observable<boolean> {
+        return Observable.create((observer: Observer<boolean>) => {
+            this.firebase.database.ref('status').orderByValue().limitToFirst(1).on('value', (snapshot: firebase.database.DataSnapshot) => {
+                const snapshotValue = snapshot.val();
+                if (snapshotValue) {
+                    const masterPlayerId = Object.keys(snapshot.val())[0];
+                    observer.next(playerId === masterPlayerId);
+                }
+            });
+        });
     }
 
     private removeEmptyRooms (): Observable<any> {
@@ -46,7 +52,7 @@ export class AppMasterService {
         return <Observable<Room[]>>this.firestoreService.getCollection('rooms');
     }
     private removeRoomIfEmpty (roomId: string): Observable<[void, void]> {
-        return this.roomService.getPlayersInRoom(roomId).pipe(
+        return this.firestoreService.getNestedCollection('rooms', roomId, 'players').pipe(
             switchMap((players: Player[]) => {
                 if (players.length > 0) {
                     return this.deleteRoomAndPlayersIfOffline(roomId, players);
@@ -58,7 +64,7 @@ export class AppMasterService {
     }
     private deleteRoomAndPlayersIfOffline (roomId: string, players: Player[]): Observable<any> {
         return combineLatest(
-                players.map((player: Player) => this.playerStatusService.getPlayerOnlineStatus(player.id))
+                players.map((player: Player) => this.firebase.object('status/' + player.id).valueChanges())
             ).pipe(
                 filter((playersOnlineStatus: Boolean[]) => playersOnlineStatus.every((onlineStatus: boolean) => !onlineStatus)),
                 switchMap(() => this.deleteRoomAndPlayers(roomId))

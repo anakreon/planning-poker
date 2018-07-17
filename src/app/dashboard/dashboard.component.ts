@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { RoomService } from '../room.service';
+import { RoomService } from '../room/room.service'; //REMOVE DEPENDENCY
 
 @Component({
     selector: 'app-dashboard',
@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
     }
 
     private createRoom (roomName: string): void {
-        const cardOptions: number[] = [1, 2, 3, 5, 8, 13, 21, 34];
+        const cardOptions: string[] = ['1', '2', '3', '5', '8', '13', '21', '34'];
         this.roomService.createRoom(roomName, cardOptions).then((roomId) => {
             this.joinRoom(roomId);
         });

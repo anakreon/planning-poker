@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Player } from '../player-list/player-list.component';
+import { Player } from '../room.service';
 
 @Component({
     selector: 'app-player-list-item',

@@ -9,6 +9,7 @@ export interface FirestoreObject {
 }
 
 type ReferenceRoot = AngularFirestore | AngularFirestoreDocument;
+type FirestoreQuery = (ref: firebase.firestore.CollectionReference) => firebase.firestore.Query;
 
 @Injectable({
     providedIn: 'root'
@@ -21,13 +22,24 @@ export class FirestoreService {
         return this.getCollectionForReferenceRoot(this.firestore, collectionName);
     }
 
-    public getNestedCollection (parentCollectionName: string, parentDocumentId: string, collectionName: string): Observable<FirestoreObject[]> {
+    public getNestedCollection (
+        parentCollectionName: string, parentDocumentId: string, collectionName: string
+    ): Observable<FirestoreObject[]> {
         const parentDocument = this.getDocumentReference(this.firestore, parentCollectionName, parentDocumentId);
         return this.getCollectionForReferenceRoot(parentDocument, collectionName);
     }
 
-    private getCollectionForReferenceRoot (referenceRoot: ReferenceRoot, collectionName: string): Observable<FirestoreObject[]> {
-        return referenceRoot.collection(collectionName).snapshotChanges().pipe(
+    public getNestedCollectionWithCondition (
+        parentCollectionName: string, parentDocumentId: string, collectionName: string, condition: FirestoreQuery
+    ): Observable<FirestoreObject[]> {
+        const parentDocument = this.getDocumentReference(this.firestore, parentCollectionName, parentDocumentId);
+        return this.getCollectionForReferenceRoot(parentDocument, collectionName, condition);
+    }
+
+    private getCollectionForReferenceRoot (
+        referenceRoot: ReferenceRoot, collectionName: string, condition?: FirestoreQuery
+    ): Observable<FirestoreObject[]> {
+        return referenceRoot.collection(collectionName, condition).snapshotChanges().pipe(
             map((values: DocumentChangeAction<{}>[]) => {
                 return values.map(this.buildObjectForChangeAction);
             })
@@ -44,12 +56,16 @@ export class FirestoreService {
         return this.getDocumentForReferenceRoot(this.firestore, collectionName, documentId);
     }
 
-    public getNestedDocument (parentCollectionName: string, parentDocumentId: string, collectionName: string, documentId: string): Observable<FirestoreObject> {
+    public getNestedDocument (
+        parentCollectionName: string, parentDocumentId: string, collectionName: string, documentId: string
+    ): Observable<FirestoreObject> {
         const parentDocument = this.getDocumentReference(this.firestore, parentCollectionName, parentDocumentId);
         return this.getDocumentForReferenceRoot(parentDocument, collectionName, documentId);
     }
 
-    private getDocumentForReferenceRoot (referenceRoot: ReferenceRoot, collectionName: string, documentId: string): Observable<FirestoreObject> {
+    private getDocumentForReferenceRoot (
+        referenceRoot: ReferenceRoot, collectionName: string, documentId: string
+    ): Observable<FirestoreObject> {
         const document = this.getDocumentReference(referenceRoot, collectionName, documentId);
         return document.snapshotChanges().pipe(
             map((value: Action<DocumentSnapshot<{}>>) => {
@@ -71,7 +87,9 @@ export class FirestoreService {
         return this.deleteDocumentForReferenceRoot(this.firestore, collectionName, documentId);
     }
 
-    public deleteNestedDocument (parentCollectionName: string, parentDocumentId: string, collectionName: string, documentId: string): Promise<void> {
+    public deleteNestedDocument (
+        parentCollectionName: string, parentDocumentId: string, collectionName: string, documentId: string
+    ): Promise<void> {
         const parentDocument = this.getDocumentReference(this.firestore, parentCollectionName, parentDocumentId);
         return this.deleteDocumentForReferenceRoot(parentDocument, collectionName, documentId);
     }
@@ -98,35 +116,37 @@ export class FirestoreService {
 
     public addDocument (collectionName: string, document: FirestoreObject): Promise<string>  {
         document.id = this.firestore.createId();
-        return this.storeDocument(collectionName, document).then(() => document.id);
+        return this.storeDocumentForReferenceRoot(this.firestore, collectionName, document).then(() => document.id);
     }
 
     public updateDocument (collectionName: string, document: FirestoreObject): Promise<void> {
-        return this.storeDocument(collectionName, document);
+        return this.updateDocumentForReferenceRoot(this.firestore, collectionName, document);
     }
 
-    private storeDocument (collectionName: string, document: FirestoreObject): Promise<void> {
-        return this.storeDocumentForReferenceRoot(this.firestore, collectionName, document);
-    }
-
-    public addNestedDocument (parentCollectionName: string, parentDocumentId: string, collectionName: string, document: FirestoreObject): Promise<string> {
+    public addNestedDocument (
+        parentCollectionName: string, parentDocumentId: string, collectionName: string, document: FirestoreObject
+    ): Promise<string> {
         document.id = this.firestore.createId();
-        return this.storeNestedDocument(parentCollectionName, parentDocumentId, collectionName, document).then(() => document.id);
-    }
-
-    public updateNestedDocument (parentCollectionName: string, parentDocumentId: string, collectionName: string, document: FirestoreObject): Promise<void> {
-        return this.storeNestedDocument(parentCollectionName, parentDocumentId, collectionName, document);
-    }
-
-    private storeNestedDocument (parentCollectionName: string, parentDocumentId: string, collectionName: string, document: FirestoreObject): Promise<void> {
         const parentDocument = this.getDocumentReference(this.firestore, parentCollectionName, parentDocumentId);
-        return this.storeDocumentForReferenceRoot(parentDocument, collectionName, document);
+        return this.storeDocumentForReferenceRoot(parentDocument, collectionName, document).then(() => document.id);
+    }
+
+    public updateNestedDocument (
+        parentCollectionName: string, parentDocumentId: string, collectionName: string, document: FirestoreObject
+    ): Promise<void> {
+        const parentDocument = this.getDocumentReference(this.firestore, parentCollectionName, parentDocumentId);
+        return this.updateDocumentForReferenceRoot(parentDocument, collectionName, document);
     }
 
     private storeDocumentForReferenceRoot (referenceRoot: ReferenceRoot, collectionName: string, document: FirestoreObject) {
         const { id, ...documentWithoutId } = document;
         const documentRef = this.getDocumentReference(referenceRoot, collectionName, id);
         return documentRef.set(documentWithoutId);
+    }
+    private updateDocumentForReferenceRoot (referenceRoot: ReferenceRoot, collectionName: string, document: FirestoreObject) {
+        const { id, ...documentWithoutId } = document;
+        const documentRef = this.getDocumentReference(referenceRoot, collectionName, id);
+        return documentRef.update(documentWithoutId);
     }
 
 }

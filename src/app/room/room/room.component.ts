@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Room } from '../../room.service';
-import { RoomService } from '../../room.service';
+import { RoomService, Room } from '../../room/room.service';
 import { MatDialog } from '@angular/material';
 import { PlayerNameDialogComponent } from '../player-name-dialog/player-name-dialog.component';
-import { RoomMasterService } from '../../room-master.service';
+import { RoomMasterService } from '../../backend/room-master.service';
 import { Subscription } from 'rxjs';
+import { AppMasterService } from '../../backend/app-master.service';
 
 @Component({
     selector: 'app-room',
@@ -17,11 +17,12 @@ export class RoomComponent implements OnInit, OnDestroy {
     public playerName: string;
     public playerId: string;
 
-    private masterFunctionsSubscription: Subscription;
+    private appMasterSubscription: Subscription;
+    private roomMasterSubscription: Subscription;
 
     constructor (
         private route: ActivatedRoute, private roomService: RoomService, public dialog: MatDialog, private router: Router,
-        private roomMasterService: RoomMasterService
+        private appMasterService: AppMasterService, private roomMasterService: RoomMasterService
     ) {}
 
     ngOnInit () {
@@ -31,19 +32,33 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.addPlayerToRoom(playerName)
                 .then((playerId: string) => {
                     this.playerId = playerId;
+                    this.registerBackendServices(playerId);
                 })
                 .catch((error) => {
                     console.log(error);
                     this.router.navigate(['/dashboard/']);
                 });
         });
-        this.masterFunctionsSubscription = this.roomMasterService.runMasterFunctions(this.room.id).subscribe((didMaintenance) => {
-            console.log('cleaned players: ', didMaintenance);
-        });
     }
 
     ngOnDestroy () {
-        this.masterFunctionsSubscription.unsubscribe();;
+        if (this.appMasterSubscription) {
+            this.appMasterSubscription.unsubscribe();
+        }
+        if (this.roomMasterSubscription) {
+            this.roomMasterSubscription.unsubscribe();
+        }
+    }
+
+    private registerBackendServices (playerId: string): void {
+        this.appMasterSubscription = this.appMasterService.runMasterFunctions(playerId)
+            .subscribe((results) => {
+                console.log('app master results: ', results);
+            });
+        this.roomMasterSubscription = this.roomMasterService.runMasterFunctions(playerId, this.room.id)
+            .subscribe((didMaintenance) => {
+                console.log('cleaned players: ', didMaintenance);
+            });
     }
 
     private getPlayerName (): Promise<string> {

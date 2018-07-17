@@ -1,6 +1,10 @@
 .playerlist {
     width: 300px;
     min-height: 100px;
+
+    .current-player {
+        color: green;
+    }
 }
 .list-group {
     padding-left: 0px;

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { FirestoreService, FirestoreObject } from './firestore.service';
+import { FirestoreService, FirestoreObject } from '../firestore.service';
 import { Observable, combineLatest } from 'rxjs';
 import { switchMap, map, take } from 'rxjs/operators';
-import { PlayerStatusService } from './player-status.service';
+import { PlayerStatusService } from '../player-status.service';
 
 export interface Room extends FirestoreObject {
     name: string;
-    cardOptions: number[];
+    cardOptions: string[];
     canVote: boolean;
     createdDate: {
         seconds: number;
@@ -17,6 +17,7 @@ export interface Room extends FirestoreObject {
 export interface Player extends FirestoreObject {
     name: string;
     role: string;
+    vote?: string;
 }
 
 export interface PlayerWithStatus extends Player {
@@ -30,12 +31,12 @@ export class RoomService {
 
     constructor (private firestoreService: FirestoreService, private playerStatusService: PlayerStatusService) {}
 
-    public createRoom (roomName: string, cardOptions: number[]): Promise<string> {
+    public createRoom (roomName: string, cardOptions: string[]): Promise<string> {
         const newRoom = {
             id: null,
             name: roomName,
             cardOptions,
-            canVote: false,
+            canVote: true,
             createdDate: new Date()
         };
         return this.firestoreService.addDocument('rooms', newRoom);
@@ -47,7 +48,7 @@ export class RoomService {
 
     public addPlayerToRoom (roomId: string, playerName: string): Promise<string> {
         return this.confirmRoomExists(roomId)
-            .then(() => this.getPlayerRole(roomId))
+            .then(() => this.createPlayerRole(roomId))
             .then((role: string) => {
                 const newPlayer: Player = {
                     id: null,
@@ -55,7 +56,7 @@ export class RoomService {
                     role
                 };
                 return this.firestoreService.addNestedDocument('rooms', roomId, 'players', newPlayer).then((playerId: string) => {
-                    this.playerStatusService.trackPlayerOnline(playerId);
+                    this.playerStatusService.trackPlayerOnline(playerId, roomId);
                     return playerId;
                 });
         });
@@ -67,7 +68,7 @@ export class RoomService {
             .toPromise();
     }
 
-    private getPlayerRole (roomId: string): Promise<string> {
+    private createPlayerRole (roomId: string): Promise<string> {
         return this.getPlayersInRoom(roomId).pipe(take(1)).toPromise().then((players: Player[]) => {
             if (players.length) {
                 return 'player';

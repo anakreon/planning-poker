@@ -2,10 +2,10 @@
     <h1>{{ room.name }}</h1>
     <div class="room-wrapper">
         <div class="cards">
-            <app-room-cards [roomId]="room.id"></app-room-cards>
+            <app-room-cards [roomId]="room.id" [playerId]="playerId"></app-room-cards>
         </div>
         <div class="players">
-            <app-room-player-list [roomId]="room.id"></app-room-player-list>
+            <app-room-player-list [roomId]="room.id" [playerId]="playerId"></app-room-player-list>
         </div>
     </div>
 </div>

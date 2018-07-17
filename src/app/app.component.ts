@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AppMasterService } from './app-master.service';
+import { AppMasterService } from './backend/app-master.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -8,17 +8,15 @@ import { Subscription } from 'rxjs';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
-    private appMasterSubscription: Subscription;
 
-    constructor (private appMasterService: AppMasterService) {}
+
+    constructor () {}
 
     public ngOnInit (): void {
-        this.appMasterSubscription = this.appMasterService.runMasterFunctions().subscribe((results) => {
-            console.log('app master results: ', results);
-        });
+
     }
 
     public ngOnDestroy () {
-        this.appMasterSubscription.unsubscribe();
+
     }
 }

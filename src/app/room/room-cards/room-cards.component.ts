@@ -1,25 +1,35 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { RoomService, Room } from '../../room.service';
-import { Observable } from 'rxjs';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { RoomService, Room } from '../../room/room.service';
+import { Observable, Subscription } from 'rxjs';
+import { VoteService } from '../../vote.service';
 
 @Component({
     selector: 'app-room-cards',
     templateUrl: './room-cards.component.html',
     styleUrls: ['./room-cards.component.css']
 })
-export class RoomCardsComponent implements OnInit {
+export class RoomCardsComponent implements OnInit, OnDestroy {
     @Input() private roomId: string;
+    @Input() private playerId: string;
     public room: Observable<Room>;
-    public selectedCardValue: number = null;
+    public vote: string;
+    private voteSubscription: Subscription;
 
-    constructor (private roomService: RoomService) {}
+    constructor (private roomService: RoomService, private voteService: VoteService) {}
 
-    public ngOnInit () {
+    public ngOnInit (): void {
         this.room = this.roomService.getRoom(this.roomId);
+        this.voteSubscription = this.voteService.getVotedValue(this.roomId, this.playerId).subscribe((vote: string) => {
+            this.vote = vote;
+        });
     }
 
-    public selectCardValue (value: number): void {
-        this.selectedCardValue = value;
+    public ngOnDestroy (): void {
+        this.voteSubscription.unsubscribe();
+    }
+
+    public selectCardValue (value: string): void {
+        this.voteService.vote(this.roomId, this.playerId, value);
     }
 
 }

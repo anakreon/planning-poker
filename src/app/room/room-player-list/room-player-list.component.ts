@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Player, RoomService } from '../../room.service';
+import { Player, RoomService } from '../../room/room.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class RoomPlayerListComponent implements OnInit {
     @Input() private roomId: string;
+    @Input() public playerId: string;
 
     public players: Observable<Player[]>;
 

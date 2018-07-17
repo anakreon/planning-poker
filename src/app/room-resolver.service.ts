@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Room, RoomService } from './room.service';
+import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { Room, RoomService } from './room/room.service';
 import { Observable, empty } from 'rxjs';
 import { first, catchError } from 'rxjs/operators';
 
