@@ -7,5 +7,6 @@ import { Player } from '../room.service';
     styleUrls: ['./player-list-item.component.scss']
 })
 export class PlayerListItemComponent {
-    @Input('player') public player: Player;
+    @Input() public player: Player;
+    @Input() public shouldShowVote: boolean;
 }

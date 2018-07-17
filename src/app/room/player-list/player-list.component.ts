@@ -10,6 +10,7 @@ import { Player } from '../room.service';
 export class PlayerListComponent {
     @Input() public players: Player[];
     @Input() private playerId: string;
+    @Input() public shouldShowVotes: boolean;
 
     public isCurrentPlayer (player: Player): boolean {
         return player.id === this.playerId;

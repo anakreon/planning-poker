@@ -1,1 +1,1 @@
-<app-player-list [players]="players | async" [playerId]="playerId"></app-player-list>
+<app-player-list [players]="players | async" [playerId]="playerId" [shouldShowVotes]="!((room | async)?.canVote)"></app-player-list>
