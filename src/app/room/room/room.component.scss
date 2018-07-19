@@ -9,7 +9,11 @@ h1 {
         flex: 3;
     }
 
-    .timer {
+    .right-block {
+        margin: 10px;
+    }
+
+    .timer, .actions {
         margin-bottom: 10px;
     }
 }

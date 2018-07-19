@@ -18,6 +18,7 @@ import { RoomCardsComponent } from './room-cards/room-cards.component';
 import { PlayerListMenuComponent } from './player-list-menu/player-list-menu.component';
 import { RoomTimerComponent } from './room-timer/room-timer.component';
 import { TimerComponent } from './timer/timer.component';
+import { RoomActionsComponent } from './room-actions/room-actions.component';
 
 @NgModule({
     imports: [
@@ -44,7 +45,8 @@ import { TimerComponent } from './timer/timer.component';
         RoomCardsComponent,
         PlayerListMenuComponent,
         RoomTimerComponent,
-        TimerComponent
+        TimerComponent,
+        RoomActionsComponent
     ],
     exports: [
         RoomComponent

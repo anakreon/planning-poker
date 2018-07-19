@@ -1,12 +1,15 @@
 <div *ngIf="playerId">
-    <h1>{{ room.name }}</h1>
     <div class="room-wrapper">
         <div class="cards">
+            <h1>{{ room.name }}</h1>
             <app-room-cards [roomId]="room.id" [currentPlayerId]="playerId"></app-room-cards>
         </div>
-        <div>
+        <div class="right-block">
             <div class="timer">
                 <app-room-timer [roomId]="room.id"></app-room-timer>
+            </div>
+            <div class="actions">
+                <app-room-actions [roomId]="room.id" [currentPlayerId]="playerId"></app-room-actions>
             </div>
             <div class="players">
                 <app-room-player-list [roomId]="room.id" [currentPlayerId]="playerId"></app-room-player-list>

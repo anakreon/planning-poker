@@ -123,4 +123,35 @@ export class RoomService {
         this.firestoreService.updateNestedDocument('rooms', roomId, 'players', updatedPlayer);
     }
 
+    public flipCards (roomId: string): Promise<void> {
+        const updatedRoom = {
+            id: roomId,
+            canVote: false,
+            timerStart: null
+        };
+        return this.firestoreService.updateDocument('rooms', updatedRoom);
+    }
+
+    public newVote (roomId: string): Promise<void> {
+        return this.resetPlayerVotes(roomId).then(() => {
+            const updatedRoom = {
+                id: roomId,
+                canVote: true,
+                timerStart: new Date()
+            };
+            return this.firestoreService.updateDocument('rooms', updatedRoom);
+        });
+    }
+    private resetPlayerVotes (roomId: string): Promise<void[]> {
+        return this.getPlayersInRoom(roomId).pipe(take(1)).toPromise().then((players: Player[]) => {
+            return Promise.all(players.map((player: Player) => {
+                const updatedPlayer = {
+                    id: player.id,
+                    vote: null
+                };
+                return this.firestoreService.updateNestedDocument('rooms', roomId, 'players', updatedPlayer);
+            }));
+        });
+    }
+
 }
