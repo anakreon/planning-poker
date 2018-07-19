@@ -1,1 +1,7 @@
-<app-player-list [players]="players | async" [playerId]="playerId" [shouldShowVotes]="!((room | async)?.canVote)"></app-player-list>
+<app-player-list 
+    [players]="players | async" 
+    [currentPlayerId]="currentPlayerId" 
+    [shouldShowVotes]="!((room | async)?.canVote)"
+    [shouldShowMenu]="isCurrentPlayerModerator | async"
+    (changeRoleRequest)="changeRole($event)">
+</app-player-list>

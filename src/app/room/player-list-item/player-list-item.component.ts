@@ -9,4 +9,5 @@ import { Player } from '../room.service';
 export class PlayerListItemComponent {
     @Input() public player: Player;
     @Input() public shouldShowVote: boolean;
+    @Input() public shouldShowMenu: boolean;
 }

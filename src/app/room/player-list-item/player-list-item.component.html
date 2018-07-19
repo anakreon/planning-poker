@@ -6,7 +6,10 @@
     </div>
     <div class="player-vote">
         <div *ngIf="shouldShowVote">{{player.vote}}</div>
-    </div>   
+    </div>
+    <div class="player-menu">
+        <ng-content></ng-content>
+    </div>
     <div class="player-status">
         <i *ngIf="player.status" class="material-icons green">sync</i>
         <i *ngIf="!player.status" class="material-icons red">sync_problem</i>

@@ -10,7 +10,7 @@ import { VoteService } from '../../vote.service';
 })
 export class RoomCardsComponent implements OnInit, OnDestroy {
     @Input() private roomId: string;
-    @Input() private playerId: string;
+    @Input() private currentPlayerId: string;
     public room: Observable<Room>;
     public vote: string;
     private voteSubscription: Subscription;
@@ -19,7 +19,7 @@ export class RoomCardsComponent implements OnInit, OnDestroy {
 
     public ngOnInit (): void {
         this.room = this.roomService.getRoom(this.roomId);
-        this.voteSubscription = this.voteService.getVotedValue(this.roomId, this.playerId).subscribe((vote: string) => {
+        this.voteSubscription = this.voteService.getVotedValue(this.roomId, this.currentPlayerId).subscribe((vote: string) => {
             this.vote = vote;
         });
     }
@@ -29,7 +29,7 @@ export class RoomCardsComponent implements OnInit, OnDestroy {
     }
 
     public selectCardValue (value: string): void {
-        this.voteService.vote(this.roomId, this.playerId, value);
+        this.voteService.vote(this.roomId, this.currentPlayerId, value);
     }
 
 }

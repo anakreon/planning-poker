@@ -8,6 +8,10 @@ export interface Room extends FirestoreObject {
     name: string;
     cardOptions: string[];
     canVote: boolean;
+    timerStart: {
+        seconds: number;
+        nanoseconds: number;
+    };
     createdDate: {
         seconds: number;
         nanoseconds: number;
@@ -37,6 +41,7 @@ export class RoomService {
             name: roomName,
             cardOptions,
             canVote: true,
+            timerStart: new Date(),
             createdDate: new Date()
         };
         return this.firestoreService.addDocument('rooms', newRoom);
@@ -104,6 +109,18 @@ export class RoomService {
                 return playerWithStatus;
             })
         );
+    }
+
+    public getPlayer (roomId: string, playerId: string): Observable<Player> {
+        return <Observable<Player>>this.firestoreService.getNestedDocument('rooms', roomId, 'players', playerId);
+    }
+
+    public changePlayerRole (roomId: string, playerId: string, role: string) {
+        const updatedPlayer = {
+            id: playerId,
+            role
+        };
+        this.firestoreService.updateNestedDocument('rooms', roomId, 'players', updatedPlayer);
     }
 
 }
