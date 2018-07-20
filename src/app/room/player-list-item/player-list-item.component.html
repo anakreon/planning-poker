@@ -4,11 +4,14 @@
         <div>{{player.name}}</div>
         <div class="subtitle">{{player.role}}</div>
     </div>
-    <div class="player-vote">
-        <div *ngIf="shouldShowVote">{{player.vote}}</div>
-    </div>
     <div class="player-menu">
         <ng-content></ng-content>
+    </div>
+    <div class="player-vote">
+        <div *ngIf="shouldShowVote">{{player.vote}}</div>
+        <div *ngIf="!shouldShowVote && player.vote">
+            <mat-icon>check</mat-icon>
+        </div>
     </div>
     <div class="player-status">
         <i *ngIf="player.status" class="material-icons green">sync</i>

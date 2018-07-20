@@ -154,4 +154,12 @@ export class RoomService {
         });
     }
 
+    public resetTimer (roomId: string): Promise<void> {
+        const updatedRoom = {
+            id: roomId,
+            timerStart: new Date()
+        };
+        return this.firestoreService.updateDocument('rooms', updatedRoom);
+    }
+
 }

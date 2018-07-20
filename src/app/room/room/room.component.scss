@@ -2,18 +2,22 @@ h1 {
     margin: 1em;
 }
 
-.room-wrapper {
-    display: flex;
-
-    .cards {
-        flex: 3;
+.room-wrapper { 
+    @media (min-width: 700px) {
+        display: flex;
+        .main-block {
+            flex: 3;
+        }
     }
+}
 
-    .right-block {
-        margin: 10px;
+.right-block {
+    margin: 10px;
+    > div {
+        width: 300px;
     }
+}
 
-    .timer, .actions {
-        margin-bottom: 10px;
-    }
+.timer, .actions {
+    margin-bottom: 10px;
 }

@@ -19,6 +19,10 @@ import { PlayerListMenuComponent } from './player-list-menu/player-list-menu.com
 import { RoomTimerComponent } from './room-timer/room-timer.component';
 import { TimerComponent } from './timer/timer.component';
 import { RoomActionsComponent } from './room-actions/room-actions.component';
+import { RoomLoaderComponent } from './room-loader/room-loader.component';
+import { RoomPlayerCardsComponent } from './room-player-cards/room-player-cards.component';
+import { PlayerCardsComponent } from './player-cards/player-cards.component';
+import { PlayerCardComponent } from './player-card/player-card.component';
 
 @NgModule({
     imports: [
@@ -46,7 +50,11 @@ import { RoomActionsComponent } from './room-actions/room-actions.component';
         PlayerListMenuComponent,
         RoomTimerComponent,
         TimerComponent,
-        RoomActionsComponent
+        RoomActionsComponent,
+        RoomLoaderComponent,
+        RoomPlayerCardsComponent,
+        PlayerCardsComponent,
+        PlayerCardComponent
     ],
     exports: [
         RoomComponent

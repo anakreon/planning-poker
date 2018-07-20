@@ -1,4 +1,5 @@
 <mat-card *ngIf="isCurrentPlayerModerator | async" class="actions-card">
     <button *ngIf="canVote | async" mat-raised-button color="primary" (click)="flipCards()">Flip Cards</button>
     <button *ngIf="!(canVote | async)" mat-raised-button color="primary" (click)="newVote()">New Vote</button>
+    <button mat-raised-button color="primary" (click)="resetTimer()">Reset timer</button>
 </mat-card>

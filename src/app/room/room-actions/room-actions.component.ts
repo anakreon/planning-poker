@@ -6,7 +6,7 @@ import { Player, RoomService, Room } from '../room.service';
 @Component({
     selector: 'app-room-actions',
     templateUrl: './room-actions.component.html',
-    styleUrls: ['./room-actions.component.css']
+    styleUrls: ['./room-actions.component.scss']
 })
 export class RoomActionsComponent implements OnInit {
     @Input() private roomId: string;
@@ -31,6 +31,10 @@ export class RoomActionsComponent implements OnInit {
 
     public newVote (): void {
         this.roomService.newVote(this.roomId);
+    }
+
+    public resetTimer (): void {
+        this.roomService.resetTimer(this.roomId);
     }
 
 }
