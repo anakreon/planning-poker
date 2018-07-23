@@ -8,9 +8,12 @@ import { PlayerWithStatus } from '../room.service';
 })
 export class PlayerCardsComponent implements OnInit {
     @Input() public players: PlayerWithStatus[];
+    public pieChartData: any;
 
     constructor () {}
 
-    ngOnInit () { }
+    ngOnInit () {
+        
+    }
 
 }

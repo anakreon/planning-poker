@@ -9,7 +9,7 @@
 .avatar {
     width: 40px;
     height: 40px;
-    margin-right: 10px;
+    font-size: 2em;
 }
 
 .player-name {
@@ -22,9 +22,12 @@
 
 .player-vote {
     font-size: 1.6em;
+    margin-top: 6px;
+    margin-right: 10px;
 }
 
 .player-status {
+    margin-top: 8px;
     .green {
         color: green;
     }

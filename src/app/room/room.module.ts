@@ -6,6 +6,7 @@ import {
     MAT_DIALOG_DEFAULT_OPTIONS
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 import { RoomComponent } from './room/room.component';
 import { CardComponent } from './card/card.component';
@@ -23,6 +24,7 @@ import { RoomLoaderComponent } from './room-loader/room-loader.component';
 import { RoomPlayerCardsComponent } from './room-player-cards/room-player-cards.component';
 import { PlayerCardsComponent } from './player-cards/player-cards.component';
 import { PlayerCardComponent } from './player-card/player-card.component';
+import { PlayerChartComponent } from './player-chart/player-chart.component';
 
 @NgModule({
     imports: [
@@ -36,7 +38,8 @@ import { PlayerCardComponent } from './player-card/player-card.component';
         MatIconModule,
         MatInputModule,
         MatMenuModule,
-        FlexLayoutModule
+        FlexLayoutModule,
+        Ng2GoogleChartsModule
     ],
     declarations: [
         RoomComponent,
@@ -54,7 +57,8 @@ import { PlayerCardComponent } from './player-card/player-card.component';
         RoomLoaderComponent,
         RoomPlayerCardsComponent,
         PlayerCardsComponent,
-        PlayerCardComponent
+        PlayerCardComponent,
+        PlayerChartComponent
     ],
     exports: [
         RoomComponent
@@ -63,7 +67,7 @@ import { PlayerCardComponent } from './player-card/player-card.component';
         PlayerNameDialogComponent
     ],
     providers: [{
-        provide: MAT_DIALOG_DEFAULT_OPTIONS, 
+        provide: MAT_DIALOG_DEFAULT_OPTIONS,
         useValue: {
             hasBackdrop: false
         }

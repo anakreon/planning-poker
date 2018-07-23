@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PlayerWithStatus, RoomService } from '../room.service';
+import { PlayerWithStatus, RoomService, Room } from '../room.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -11,11 +11,12 @@ export class RoomPlayerCardsComponent implements OnInit {
     @Input() private roomId: string;
 
     public players: Observable<PlayerWithStatus[]>;
+    public room: Observable<Room>;
 
     constructor (private roomService: RoomService) { }
 
     ngOnInit () {
         this.players = this.roomService.getPlayersInRoomWithOnlineStatus(this.roomId);
+        this.room = this.roomService.getRoom(this.roomId);
     }
-
 }

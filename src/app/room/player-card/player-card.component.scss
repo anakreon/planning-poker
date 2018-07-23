@@ -4,11 +4,6 @@
     text-align: center;
     margin: 0.3em;
     cursor: default;
-
-    .example-header-image {
-        background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-        background-size: cover;
-    }
     
     .value {
         @include no-select();
@@ -17,6 +12,12 @@
 
     .mat-card-header {
         justify-content: center;
+        display: flex;
+        flex-direction: row-reverse;
+        
+        .avatar {
+            font-size: 2.5em;
+        }
     }
 }
 
