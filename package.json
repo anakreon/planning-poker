@@ -5,6 +5,7 @@
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build",
+        "deploy": "node deploy",
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e"
@@ -28,6 +29,7 @@
         "firebase": "^5.2.0",
         "hammerjs": "^2.0.8",
         "ng2-google-charts": "^3.4.0",
+        "rsync": "^0.6.1",
         "rxjs": "^6.0.0",
         "zone.js": "^0.8.26"
     },
