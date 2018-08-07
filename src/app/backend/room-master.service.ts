@@ -34,10 +34,16 @@ export class RoomMasterService {
 
     private removeOfflinePlayer (roomId: string, player: Player): Observable<void> {
         return this.getPlayerOnlineStatus(player.id).pipe(
-            debounceTime(10000),
+            debounceTime(this.getDebounceTime(player)),
             filter((status: string) => !status),
             switchMap(() => this.firestoreService.deleteNestedDocument('rooms', roomId, 'players', player.id))
         );
+    }
+
+    private getDebounceTime (player: Player): number {
+        const tenSeconds = 10000;
+        const tenMinutes = 600000;
+        return player.role === 'moderator' ? tenSeconds : tenMinutes;
     }
 
     private getPlayerOnlineStatus (playerId: string): Observable<boolean> {

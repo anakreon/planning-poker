@@ -10,7 +10,7 @@ export class PlayerStatusService {
 
     constructor (private firebase: AngularFireDatabase) {}
 
-    public trackPlayerOnline (playerId: string, roomId: string): void {
+    public trackPlayerOnline (playerId: string): void {
         const statusRef = this.firebase.database.ref('status/' + playerId);
         this.firebase.database.ref('.info/connected').on('value', (snapshot: DataSnapshot) => {
             if (snapshot.val() == false) {

@@ -51,19 +51,21 @@ export class RoomService {
         return <Observable<Room>>this.firestoreService.getDocument('rooms', roomId);
     }
 
-    public addPlayerToRoom (roomId: string, playerName: string): Promise<string> {
-        return this.confirmRoomExists(roomId)
-            .then(() => this.createPlayerRole(roomId))
-            .then((role: string) => {
-                const newPlayer: Player = {
+    public addPlayerToRoom (roomId: string, player: Player): Promise<string> {
+        return this.firestoreService.addNestedDocument('rooms', roomId, 'players', player).then((playerId: string) => {
+            return playerId;
+        });
+    }
+
+    public createNewPlayerForRoom (roomId: string, playerName: string): Promise<Player> {
+        return this.confirmRoomExists(roomId).then(() => {
+            return this.createPlayerRole(roomId).then((role: string) => {
+                return {
                     id: null,
                     name: playerName,
                     role
                 };
-                return this.firestoreService.addNestedDocument('rooms', roomId, 'players', newPlayer).then((playerId: string) => {
-                    this.playerStatusService.trackPlayerOnline(playerId, roomId);
-                    return playerId;
-                });
+            });
         });
     }
 
