@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { RoomService, Room, Player } from '../../room/room.service';
 import { Observable, Subscription } from 'rxjs';
-import { VoteService } from '../../vote.service';
+import { RoomService, Room } from '../room.service';
+import { VoteService } from '../vote.service';
 
 @Component({
     selector: 'app-room-cards',

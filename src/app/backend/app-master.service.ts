@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FirestoreService } from '../firestore.service';
-import { Player, Room } from '../room/room.service';
-import { map, switchMap, filter } from 'rxjs/operators';
-import { combineLatest, Observable, of, forkJoin, Observer } from 'rxjs';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { combineLatest, Observable, forkJoin, Observer } from 'rxjs';
+import { map, switchMap, filter } from 'rxjs/operators';
+import { FirestoreService, FirestoreObject } from '../shared/firestore.service';
 
 @Injectable({
     providedIn: 'root'
@@ -22,12 +21,18 @@ export class AppMasterService {
     }
 
     private shouldHandleMasterFunctions (playerId: string): Observable<boolean> {
-        return Observable.create((observer: Observer<boolean>) => {
+        return this.getFirstOnlinePlayerId().pipe(
+            map((firstOnlinePlayerId: string) => firstOnlinePlayerId === playerId)
+        );
+    }
+
+    private getFirstOnlinePlayerId (): Observable<string> {
+        return Observable.create((observer: Observer<string>) => {
             this.firebase.database.ref('status').orderByValue().limitToFirst(1).on('value', (snapshot: firebase.database.DataSnapshot) => {
                 const snapshotValue = snapshot.val();
                 if (snapshotValue) {
-                    const masterPlayerId = Object.keys(snapshot.val())[0];
-                    observer.next(playerId === masterPlayerId);
+                    const masterPlayerId = Object.keys(snapshotValue)[0];
+                    observer.next(masterPlayerId);
                 }
             });
         });
@@ -35,25 +40,25 @@ export class AppMasterService {
 
     private removeEmptyRooms (): Observable<any> {
         return this.getAllRooms().pipe(
-            map((rooms: Room[]) => rooms
-                .filter((room: Room) => this.isOlderThanTenMinutes(room))
-                .map((room: Room) => room.id)
+            map((rooms: FirestoreObject[]) => rooms
+                .filter((room: FirestoreObject) => this.isOlderThanTenMinutes(room))
+                .map((room: FirestoreObject) => room.id)
             ),
             switchMap((roomIds: string[]) => {
                 return combineLatest(roomIds.map((roomId: string) => this.removeRoomIfEmpty(roomId)));
             })
         );
     }
-    private isOlderThanTenMinutes (room: Room): boolean {
+    private isOlderThanTenMinutes (room: FirestoreObject): boolean {
         const tenMinutesAgoInSeconds = (Date.now() - 600000) / 1000;
         return room.createdDate.seconds < tenMinutesAgoInSeconds;
     }
-    private getAllRooms (): Observable<Room[]> {
-        return <Observable<Room[]>>this.firestoreService.getCollection('rooms');
+    private getAllRooms (): Observable<FirestoreObject[]> {
+        return <Observable<FirestoreObject[]>>this.firestoreService.getCollection('rooms');
     }
     private removeRoomIfEmpty (roomId: string): Observable<[void, void]> {
         return this.firestoreService.getNestedCollection('rooms', roomId, 'players').pipe(
-            switchMap((players: Player[]) => {
+            switchMap((players: FirestoreObject[]) => {
                 if (players.length > 0) {
                     return this.deleteRoomAndPlayersIfOffline(roomId, players);
                 } else {
@@ -62,9 +67,9 @@ export class AppMasterService {
             })
         );
     }
-    private deleteRoomAndPlayersIfOffline (roomId: string, players: Player[]): Observable<any> {
+    private deleteRoomAndPlayersIfOffline (roomId: string, players: FirestoreObject[]): Observable<any> {
         return combineLatest(
-                players.map((player: Player) => this.firebase.object('status/' + player.id).valueChanges())
+                players.map((player: FirestoreObject) => this.firebase.object('status/' + player.id).valueChanges())
             ).pipe(
                 filter((playersOnlineStatus: Boolean[]) => playersOnlineStatus.every((onlineStatus: boolean) => !onlineStatus)),
                 switchMap(() => this.deleteRoomAndPlayers(roomId))

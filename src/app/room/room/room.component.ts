@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { RoomService, Player, Room } from '../../room/room.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { RoomService, Player, Room } from '../room.service';
 
 @Component({
     selector: 'app-room',

@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RoomService, Room, Player } from '../../room/room.service';
-import { MatDialog } from '@angular/material';
-import { PlayerNameDialogComponent } from '../player-name-dialog/player-name-dialog.component';
-import { RoomMasterService } from '../../backend/room-master.service';
 import { Subscription, Observable } from 'rxjs';
-import { AppMasterService } from '../../backend/app-master.service';
-import { PlayerSessionService } from '../../player-session.service';
-import { PlayerStatusService } from '../../player-status.service';
 import { filter } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+import { RoomService, Room } from '../room.service';
+import { DialogGetPlayerNameComponent } from '../../dialog/dialog-get-player-name/dialog-get-player-name.component';
+import { RoomMasterService } from '../../backend/room-master.service';
+import { AppMasterService } from '../../backend/app-master.service';
+import { PlayerSessionService } from '../../shared/player-session.service';
+import { PlayerStatusService } from '../../shared/player-status.service';
 
 @Component({
     selector: 'app-room-loader',
@@ -26,19 +26,18 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
 
     constructor (
         private route: ActivatedRoute, private roomService: RoomService, private playerSessionService: PlayerSessionService,
-        private playerStatusService: PlayerStatusService, private dialog: MatDialog, private router: Router, 
+        private playerStatusService: PlayerStatusService, private dialog: MatDialog, private router: Router,
         private appMasterService: AppMasterService, private roomMasterService: RoomMasterService
     ) {}
 
     async ngOnInit () {
         this.room = this.route.snapshot.data.room;
         try {
-            const player = await this.getCurrentPlayer();
-            this.playerId = player.id;
-            this.registerSubscriptions(player.id);
+            const playerId = await this.getCurrentPlayerId();
+            this.playerId = playerId;
+            this.registerSubscriptions(playerId);
         } catch (error) {
-            console.log(error);
-            this.router.navigate(['/dashboard/']);
+            this.router.navigate(['dashboard']);
         }
     }
 
@@ -68,19 +67,19 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
             .pipe(
                 filter((status: boolean) => !status)
             )
-            .subscribe(() => this.playerStatusService.trackPlayerOnline(playerId));
+            .subscribe(() => this.playerStatusService.trackPlayerOnlineStatus(playerId));
     }
 
-    private async getCurrentPlayer (): Promise<Player> {
-        const playerFromSession = await this.playerSessionService.restorePlayerFromSession(this.room.id);
-        if (playerFromSession) {
-            return playerFromSession;
+    private async getCurrentPlayerId (): Promise<string> {
+        const playerIdFromSession = await this.playerSessionService.getPlayerIdFromSession(this.room.id);
+        if (playerIdFromSession) {
+            return playerIdFromSession;
         } else {
             const playerName = await this.askForPlayerName();
             const newPlayer = await this.roomService.createNewPlayerForRoom(this.room.id, playerName);
             newPlayer.id = await this.roomService.addPlayerToRoom(this.room.id, newPlayer);
-            this.playerSessionService.setPlayerForRoom(this.room.id, newPlayer);
-            return newPlayer;
+            this.playerSessionService.storePlayerSessionForRoom(this.room.id, newPlayer.id);
+            return newPlayer.id;
         }
     }
 
@@ -97,7 +96,7 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
     }
 
     private getPlayerNameFromDialog (defaultPlayerName: string) {
-        const dialogRef = this.dialog.open(PlayerNameDialogComponent, {
+        const dialogRef = this.dialog.open(DialogGetPlayerNameComponent, {
             height: '260px',
             width: '275px',
             data: { defaultPlayerName }

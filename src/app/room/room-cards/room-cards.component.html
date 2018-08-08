@@ -1,6 +1,6 @@
-<app-card-container 
+<app-vote-cards
     (selectRequest)="selectCardValue($event)" 
     [selectedValue]="vote" 
     [options]="(room | async)?.cardOptions" 
     [canChangeSelection]="(room | async)?.canVote">
-</app-card-container>
+</app-vote-cards>

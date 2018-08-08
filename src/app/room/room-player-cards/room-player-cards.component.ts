@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PlayerWithStatus, RoomService, Room } from '../room.service';
 import { Observable } from 'rxjs';
+import { PlayerWithStatus, RoomService, Room } from '../room.service';
 
 @Component({
     selector: 'app-room-player-cards',

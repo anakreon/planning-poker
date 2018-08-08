@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Player, RoomService, Room } from '../../room/room.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ChangeRoleRequest } from '../player-list/player-list.component';
+import { Player, RoomService, Room } from '../room.service';
+import { ChangeRoleRequest } from '../../player-list/player-list/player-list.component';
 
 @Component({
     selector: 'app-room-player-list',

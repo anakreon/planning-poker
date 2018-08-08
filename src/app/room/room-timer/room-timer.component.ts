@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
-import { TimerComponent } from '../timer/timer.component';
-import { RoomService, Room } from '../room.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { RoomService, Room } from '../room.service';
+import { TimerComponent } from '../../timer/timer/timer.component';
 
 interface FirebaseDate {
     seconds: number;

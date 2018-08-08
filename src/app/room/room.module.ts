@@ -1,76 +1,51 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import {
-    MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule,
-    MAT_DIALOG_DEFAULT_OPTIONS
-} from '@angular/material';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { Ng2GoogleChartsModule } from 'ng2-google-charts';
+import { MatButtonModule, MatCardModule } from '@angular/material';
+
+import { BackendModule } from '../backend/backend.module';
+import { DialogModule } from '../dialog/dialog.module';
+import { PlayerListModule } from '../player-list/player-list.module';
+import { TimerModule } from '../timer/timer.module';
+import { VoteCardsModule } from '../vote-cards/vote-cards.module';
+import { VoteResultCardsModule } from '../vote-result-cards/vote-result-cards.module';
+import { VoteResultChartModule } from '../vote-result-chart/vote-result-chart.module';
 
 import { RoomComponent } from './room/room.component';
-import { CardComponent } from './card/card.component';
-import { CardContainerComponent } from './card-container/card-container.component';
-import { PlayerListComponent } from './player-list/player-list.component';
-import { PlayerListItemComponent } from './player-list-item/player-list-item.component';
-import { PlayerNameDialogComponent } from './player-name-dialog/player-name-dialog.component';
 import { RoomPlayerListComponent } from './room-player-list/room-player-list.component';
 import { RoomCardsComponent } from './room-cards/room-cards.component';
-import { PlayerListMenuComponent } from './player-list-menu/player-list-menu.component';
 import { RoomTimerComponent } from './room-timer/room-timer.component';
-import { TimerComponent } from './timer/timer.component';
 import { RoomActionsComponent } from './room-actions/room-actions.component';
 import { RoomLoaderComponent } from './room-loader/room-loader.component';
 import { RoomPlayerCardsComponent } from './room-player-cards/room-player-cards.component';
-import { PlayerCardsComponent } from './player-cards/player-cards.component';
-import { PlayerCardComponent } from './player-card/player-card.component';
-import { PlayerChartComponent } from './player-chart/player-chart.component';
+import { SharedModule } from '../shared/shared.module';
+import { RoomRoutingModule } from './room-routing.module';
 
 @NgModule({
     imports: [
         CommonModule,
-        ReactiveFormsModule,
         MatButtonModule,
         MatCardModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatGridListModule,
-        MatIconModule,
-        MatInputModule,
-        MatMenuModule,
-        FlexLayoutModule,
-        Ng2GoogleChartsModule
+        DialogModule,
+        BackendModule,
+        PlayerListModule,
+        SharedModule,
+        TimerModule,
+        VoteCardsModule,
+        VoteResultCardsModule,
+        VoteResultChartModule,
+        RoomRoutingModule
     ],
     declarations: [
         RoomComponent,
-        CardComponent,
-        CardContainerComponent,
-        PlayerListComponent,
-        PlayerListItemComponent,
-        PlayerNameDialogComponent,
         RoomPlayerListComponent,
         RoomCardsComponent,
-        PlayerListMenuComponent,
         RoomTimerComponent,
-        TimerComponent,
         RoomActionsComponent,
         RoomLoaderComponent,
-        RoomPlayerCardsComponent,
-        PlayerCardsComponent,
-        PlayerCardComponent,
-        PlayerChartComponent
+        RoomPlayerCardsComponent
     ],
     exports: [
         RoomComponent
-    ],
-    entryComponents: [
-        PlayerNameDialogComponent
-    ],
-    providers: [{
-        provide: MAT_DIALOG_DEFAULT_OPTIONS,
-        useValue: {
-            hasBackdrop: false
-        }
-    }]
+    ]
 })
 export class RoomModule { }

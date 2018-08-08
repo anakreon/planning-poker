@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FirestoreService, FirestoreObject } from '../firestore.service';
 import { Observable, combineLatest } from 'rxjs';
 import { switchMap, map, take } from 'rxjs/operators';
-import { PlayerStatusService } from '../player-status.service';
-
+import { FirestoreService, FirestoreObject } from '../shared/firestore.service';
+import { PlayerStatusService } from '../shared/player-status.service';
 export interface Room extends FirestoreObject {
     name: string;
     cardOptions: string[];

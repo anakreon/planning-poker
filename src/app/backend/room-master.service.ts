@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FirestoreService } from '../firestore.service';
-import { Player } from '../room/room.service';
-import { switchMap, filter, debounceTime } from 'rxjs/operators';
-import { combineLatest, Observable, of } from 'rxjs';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { combineLatest, Observable, of } from 'rxjs';
+import { switchMap, filter, debounceTime } from 'rxjs/operators';
+import { FirestoreService, FirestoreObject } from '../shared/firestore.service';
 
 @Injectable({
     providedIn: 'root'
@@ -28,11 +27,13 @@ export class RoomMasterService {
 
     private removeOfflinePlayers (roomId: string): Observable<void[]> {
         return this.getPlayersInRoom(roomId).pipe(
-            switchMap((players: Player[]) => combineLatest(players.map((player: Player) => this.removeOfflinePlayer(roomId, player))))
+            switchMap((players: FirestoreObject[]) => {
+                return combineLatest(players.map((player: FirestoreObject) => this.removeOfflinePlayer(roomId, player)));
+            })
         );
     }
 
-    private removeOfflinePlayer (roomId: string, player: Player): Observable<void> {
+    private removeOfflinePlayer (roomId: string, player: FirestoreObject): Observable<void> {
         return this.getPlayerOnlineStatus(player.id).pipe(
             debounceTime(this.getDebounceTime(player)),
             filter((status: string) => !status),
@@ -40,7 +41,7 @@ export class RoomMasterService {
         );
     }
 
-    private getDebounceTime (player: Player): number {
+    private getDebounceTime (player: FirestoreObject): number {
         const tenSeconds = 10000;
         const tenMinutes = 600000;
         return player.role === 'moderator' ? tenSeconds : tenMinutes;
@@ -52,21 +53,21 @@ export class RoomMasterService {
 
     private assignDifferentModeratorIfNeeded (roomId: string): Observable<any> {
         return this.getPlayersInRoom(roomId).pipe(
-            filter((players: Player[]) => this.shouldAssignNewModerator(players)),
-            switchMap((players: Player[]) => this.assignNewModerator(roomId, players))
+            filter((players: FirestoreObject[]) => this.shouldAssignNewModerator(players)),
+            switchMap((players: FirestoreObject[]) => this.assignNewModerator(roomId, players))
         );
     }
 
-    private shouldAssignNewModerator (players: Player[]): boolean {
-        return players.length > 0 && players.every((player: Player) => player.role !== 'moderator');
+    private shouldAssignNewModerator (players: FirestoreObject[]): boolean {
+        return players.length > 0 && players.every((player: FirestoreObject) => player.role !== 'moderator');
     }
 
-    private assignNewModerator (roomId: string, players: Player[]): Promise<void> {
+    private assignNewModerator (roomId: string, players: FirestoreObject[]): Promise<void> {
         const newModerator = players.shift();
         newModerator.role = 'moderator';
         return this.firestoreService.updateNestedDocument('rooms', roomId, 'players', newModerator);
     }
-    private getPlayersInRoom (roomId: string): Observable<Player[]> {
-        return <Observable<Player[]>>this.firestoreService.getNestedCollection('rooms', roomId, 'players');
+    private getPlayersInRoom (roomId: string): Observable<FirestoreObject[]> {
+        return <Observable<FirestoreObject[]>>this.firestoreService.getNestedCollection('rooms', roomId, 'players');
     }
 }

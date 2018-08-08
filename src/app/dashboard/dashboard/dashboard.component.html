@@ -1,0 +1,18 @@
+<mat-tab-group>
+    <mat-tab label="Create a Room">
+        <app-dashboard-tab 
+            stepLabel="Enter room name" 
+            inputPlaceholder="Room Name"
+            buttonLabel="Create Room"
+            (actionRequest)="createRoom($event)">
+        </app-dashboard-tab>
+    </mat-tab>
+    <mat-tab label="Join a Room">
+        <app-dashboard-tab
+            stepLabel="Enter room id" 
+            inputPlaceholder="Room Id"
+            buttonLabel="Join Room"
+            (actionRequest)="joinRoom($event)">
+        </app-dashboard-tab>
+    </mat-tab>
+</mat-tab-group>
