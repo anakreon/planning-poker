@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RoomService, Player, Room } from '../room.service';
+import { Constant } from '../../shared/constant.service';
 
 @Component({
     selector: 'app-room',
@@ -15,11 +16,11 @@ export class RoomComponent implements OnInit {
     public canVote: Observable<boolean>;
     public room: Observable<Room>;
 
-    constructor (private roomService: RoomService) {}
+    constructor (private roomService: RoomService, private constant: Constant) {}
 
     ngOnInit () {
         this.isCurrentPlayerObserver = this.roomService.getPlayer(this.roomId, this.playerId).pipe(
-            map((player: Player) => player.role === 'observer')
+            map((player: Player) => player.role === this.constant.playerRole.observer)
         );
         this.canVote = this.roomService.getRoom(this.roomId).pipe(
             map((room: Room) => room.canVote)

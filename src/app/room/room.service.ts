@@ -3,6 +3,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { switchMap, map, take } from 'rxjs/operators';
 import { FirestoreService, FirestoreObject } from '../shared/firestore.service';
 import { PlayerStatusService } from '../shared/player-status.service';
+import { Constant } from '../shared/constant.service';
 export interface Room extends FirestoreObject {
     name: string;
     cardOptions: string[];
@@ -32,7 +33,9 @@ export interface PlayerWithStatus extends Player {
 })
 export class RoomService {
 
-    constructor (private firestoreService: FirestoreService, private playerStatusService: PlayerStatusService) {}
+    constructor (
+        private firestoreService: FirestoreService, private playerStatusService: PlayerStatusService, private constant: Constant
+    ) {}
 
     public createRoom (roomName: string, cardOptions: string[]): Promise<string> {
         const newRoom = {
@@ -43,17 +46,18 @@ export class RoomService {
             timerStart: new Date(),
             createdDate: new Date()
         };
-        return this.firestoreService.addDocument('rooms', newRoom);
+        return this.firestoreService.addDocument(this.constant.collection.rooms, newRoom);
     }
 
     public getRoom (roomId: string): Observable<Room> {
-        return <Observable<Room>>this.firestoreService.getDocument('rooms', roomId);
+        return <Observable<Room>>this.firestoreService.getDocument(this.constant.collection.rooms, roomId);
     }
 
     public addPlayerToRoom (roomId: string, player: Player): Promise<string> {
-        return this.firestoreService.addNestedDocument('rooms', roomId, 'players', player).then((playerId: string) => {
-            return playerId;
-        });
+        return this.firestoreService.addNestedDocument(this.constant.collection.rooms, roomId, this.constant.collection.players, player)
+            .then((playerId: string) => {
+                return playerId;
+            });
     }
 
     public createNewPlayerForRoom (roomId: string, playerName: string): Promise<Player> {
@@ -77,15 +81,16 @@ export class RoomService {
     private createPlayerRole (roomId: string): Promise<string> {
         return this.getPlayersInRoom(roomId).pipe(take(1)).toPromise().then((players: Player[]) => {
             if (players.length) {
-                return 'player';
+                return this.constant.playerRole.player;
             } else {
-                return 'moderator';
+                return this.constant.playerRole.moderator;
             }
         });
     }
 
     public getPlayersInRoom (roomId: string): Observable<Player[]> {
-        return <Observable<Player[]>>this.firestoreService.getNestedCollection('rooms', roomId, 'players');
+        return <Observable<Player[]>>this.firestoreService.getNestedCollection(
+            this.constant.collection.rooms, roomId, this.constant.collection.players);
     }
 
     public getPlayersInRoomWithOnlineStatus (roomId: string): Observable<PlayerWithStatus[]> {
@@ -113,7 +118,8 @@ export class RoomService {
     }
 
     public getPlayer (roomId: string, playerId: string): Observable<Player> {
-        return <Observable<Player>>this.firestoreService.getNestedDocument('rooms', roomId, 'players', playerId);
+        return <Observable<Player>>this.firestoreService.getNestedDocument(
+            this.constant.collection.rooms, roomId, this.constant.collection.players, playerId);
     }
 
     public changePlayerRole (roomId: string, playerId: string, role: string) {
@@ -121,7 +127,7 @@ export class RoomService {
             id: playerId,
             role
         };
-        this.firestoreService.updateNestedDocument('rooms', roomId, 'players', updatedPlayer);
+        this.firestoreService.updateNestedDocument(this.constant.collection.rooms, roomId, this.constant.collection.players, updatedPlayer);
     }
 
     public flipCards (roomId: string): Promise<void> {
@@ -130,7 +136,7 @@ export class RoomService {
             canVote: false,
             timerStart: null
         };
-        return this.firestoreService.updateDocument('rooms', updatedRoom);
+        return this.firestoreService.updateDocument(this.constant.collection.rooms, updatedRoom);
     }
 
     public newVote (roomId: string): Promise<void> {
@@ -140,7 +146,7 @@ export class RoomService {
                 canVote: true,
                 timerStart: new Date()
             };
-            return this.firestoreService.updateDocument('rooms', updatedRoom);
+            return this.firestoreService.updateDocument(this.constant.collection.rooms, updatedRoom);
         });
     }
     private resetPlayerVotes (roomId: string): Promise<void[]> {
@@ -150,7 +156,8 @@ export class RoomService {
                     id: player.id,
                     vote: null
                 };
-                return this.firestoreService.updateNestedDocument('rooms', roomId, 'players', updatedPlayer);
+                return this.firestoreService.updateNestedDocument(
+                    this.constant.collection.rooms, roomId, this.constant.collection.players, updatedPlayer);
             }));
         });
     }
@@ -160,7 +167,7 @@ export class RoomService {
             id: roomId,
             timerStart: new Date()
         };
-        return this.firestoreService.updateDocument('rooms', updatedRoom);
+        return this.firestoreService.updateDocument(this.constant.collection.rooms, updatedRoom);
     }
 
 }

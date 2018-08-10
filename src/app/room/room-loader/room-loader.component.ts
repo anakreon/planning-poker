@@ -28,7 +28,7 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute, private roomService: RoomService, private playerSessionService: PlayerSessionService,
         private playerStatusService: PlayerStatusService, private dialog: MatDialog, private router: Router,
         private appMasterService: AppMasterService, private roomMasterService: RoomMasterService
-    ) {}
+    ) { }
 
     async ngOnInit () {
         this.room = this.route.snapshot.data.room;

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Player, RoomService, Room } from '../room.service';
 import { ChangeRoleRequest } from '../../player-list/player-list/player-list.component';
+import { Constant } from '../../shared/constant.service';
 
 @Component({
     selector: 'app-room-player-list',
@@ -17,13 +18,13 @@ export class RoomPlayerListComponent implements OnInit {
     public room: Observable<Room>;
     public isCurrentPlayerModerator: Observable<boolean>;
 
-    constructor (private roomService: RoomService) { }
+    constructor (private roomService: RoomService, private constant: Constant) { }
 
     ngOnInit () {
         this.players = this.roomService.getPlayersInRoomWithOnlineStatus(this.roomId);
         this.room = this.roomService.getRoom(this.roomId);
         this.isCurrentPlayerModerator = this.roomService.getPlayer(this.roomId, this.currentPlayerId).pipe(
-            map((player: Player) => player.role === 'moderator')
+            map((player: Player) => player.role === this.constant.playerRole.moderator)
         );
     }
 

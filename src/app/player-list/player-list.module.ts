@@ -6,6 +6,7 @@ import { MatButtonModule, MatCardModule, MatIconModule, MatMenuModule } from '@a
 import { PlayerListComponent } from './player-list/player-list.component';
 import { PlayerListItemComponent } from './player-list-item/player-list-item.component';
 import { PlayerListMenuComponent } from './player-list-menu/player-list-menu.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
     imports: [
@@ -13,7 +14,8 @@ import { PlayerListMenuComponent } from './player-list-menu/player-list-menu.com
         MatButtonModule,
         MatCardModule,
         MatIconModule,
-        MatMenuModule
+        MatMenuModule,
+        SharedModule
     ],
     declarations: [
         PlayerListComponent,

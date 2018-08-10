@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule, MatCardModule } from '@angular/material';
 
-import { BackendModule } from '../backend/backend.module';
 import { DialogModule } from '../dialog/dialog.module';
 import { PlayerListModule } from '../player-list/player-list.module';
 import { TimerModule } from '../timer/timer.module';
@@ -26,7 +25,6 @@ import { RoomRoutingModule } from './room-routing.module';
         MatButtonModule,
         MatCardModule,
         DialogModule,
-        BackendModule,
         PlayerListModule,
         SharedModule,
         TimerModule,
