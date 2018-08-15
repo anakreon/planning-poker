@@ -1,0 +1,18 @@
+<div class="room-wrapper">
+    <div class="main-block">
+        <h1>{{ (room | async)?.name }}</h1>
+        <app-room-cards *ngIf="!(isCurrentPlayerObserver | async) && (canVote | async)" [roomId]="roomId" [currentPlayerId]="playerId"></app-room-cards>
+        <app-room-player-cards *ngIf="(isCurrentPlayerObserver | async) || !(canVote | async)" [roomId]="roomId"></app-room-player-cards>
+    </div>
+    <div class="right-block">
+        <div class="timer">
+            <app-room-timer [roomId]="roomId"></app-room-timer>
+        </div>
+        <div class="actions">
+            <app-room-actions [roomId]="roomId" [currentPlayerId]="playerId"></app-room-actions>
+        </div>
+        <div class="players">
+            <app-room-player-list [roomId]="roomId" [currentPlayerId]="playerId"></app-room-player-list>
+        </div>
+    </div>
+</div>
