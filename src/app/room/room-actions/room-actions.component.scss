@@ -1,0 +1,9 @@
+.actions-card {
+    padding: 10px;
+    display: flex;
+    
+    > button {
+        margin: 5px;
+        flex: 1;
+    }
+}

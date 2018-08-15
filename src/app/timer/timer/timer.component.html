@@ -1,0 +1,10 @@
+<mat-card class="example-card">
+    <mat-card-content>
+        <mat-icon>av_timer</mat-icon>
+        <span class="clock">{{timerValue}}</span>
+    </mat-card-content>
+    <mat-card-actions *ngIf="showControls">
+        <button mat-button (click)="start()">Start</button>
+        <button mat-button (click)="reset()">Reset</button>
+    </mat-card-actions>
+</mat-card>

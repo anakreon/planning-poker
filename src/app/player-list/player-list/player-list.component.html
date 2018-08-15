@@ -1,0 +1,11 @@
+<mat-card class="playerlist">
+    <ul class="list-group">
+        <app-player-list-item *ngFor="let player of players" 
+            [player]="player" 
+            [shouldShowVote]="shouldShowVotes"
+            [shouldShowMenu]="shouldShowMenu"
+            [ngClass]="{ 'current-player': isCurrentPlayer(player) }">
+            <app-player-list-menu *ngIf="shouldShowMenu" [playerId]="player.id" [currentRole]="player.role" (changeRoleRequest)="changeRole($event)"></app-player-list-menu>
+        </app-player-list-item>
+    </ul>
+</mat-card>
