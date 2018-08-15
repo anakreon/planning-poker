@@ -1,0 +1,9 @@
+<div fxLayout="row wrap">
+    <app-card fxFlex="20" fxFlex.gt-sm="30" fxFlex.xs="40"
+        *ngFor="let option of options" 
+        [value]="option" 
+        (click)="selectValue(option)" 
+        [isSelected]="isSelected(option)"
+        [isSelectable]="canChangeSelection">
+    </app-card>
+</div>

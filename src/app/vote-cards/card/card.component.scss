@@ -1,0 +1,21 @@
+@import '~src/sass/mixins';
+
+.card {
+    text-align: center;
+    font-size: 3em;
+    margin: 0.3em;
+    cursor: pointer;
+    
+    .value {
+        @include no-select();
+    }
+    &.selected {
+        background-color: #4dd0e1;
+    }
+    &.isSelectable {
+        cursor: pointer;
+    }
+    &:not(.isSelectable) {
+        cursor: not-allowed;
+    }
+}
