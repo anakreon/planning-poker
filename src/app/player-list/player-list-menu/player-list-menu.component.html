@@ -1,0 +1,9 @@
+<mat-menu #appMenu="matMenu">
+    <ng-container *ngFor="let role of allRoles">
+        <button mat-menu-item *ngIf="!isCurrentRole(role)" (click)="changeToRole(role)">Change to {{role}}</button>
+    </ng-container>
+</mat-menu>
+
+<button mat-icon-button [matMenuTriggerFor]="appMenu">
+    <mat-icon>more_vert</mat-icon>
+</button>
