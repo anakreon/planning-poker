@@ -1,0 +1,4 @@
+<div>
+    <app-result-cards [players]="players | async"></app-result-cards>
+    <app-result-chart [players]="players | async" [cardOptions]="(room | async)?.cardOptions" class="chart"></app-result-chart>
+</div>
