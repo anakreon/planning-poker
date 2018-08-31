@@ -1,0 +1,13 @@
+<mat-horizontal-stepper linear="true" class="stepper">
+    <mat-step [stepControl]="formGroup">
+        <form [formGroup]="formGroup">
+            <ng-template matStepLabel>Enter room id</ng-template>
+            <mat-form-field>
+                <input matInput placeholder="Room Id" formControlName="formControl" required>
+            </mat-form-field>
+            <div>
+                <button mat-raised-button color="primary" [disabled]="formGroup.invalid" (click)="buttonClicked()">Join Room</button>
+            </div>
+        </form>
+    </mat-step>
+</mat-horizontal-stepper>

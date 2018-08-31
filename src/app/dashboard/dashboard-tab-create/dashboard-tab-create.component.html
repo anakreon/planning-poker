@@ -1,0 +1,29 @@
+<mat-horizontal-stepper linear="true" class="stepper">
+    <mat-step [stepControl]="formGroup">
+        <form [formGroup]="formGroup">
+            <ng-template matStepLabel>Enter room name</ng-template>
+            <mat-form-field>
+                <input matInput placeholder="Room Name" formControlName="roomName" required>
+            </mat-form-field>
+            <div>
+                <button mat-raised-button color="primary" [disabled]="formGroup.invalid" matStepperNext>Next</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step [stepControl]="formGroup">
+        <form [formGroup]="formGroup">
+            <ng-template matStepLabel>Adjust room options</ng-template>
+            <mat-list>
+                <mat-list-item>
+                    <span class="list-label">Cards Selection: </span>
+                    <app-dashboard-card-picker [cardOptions]="cardOptions" (cardsSelectionUpdateRequest)="updateCardOptions($event)">
+                    </app-dashboard-card-picker>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            </mat-list>
+            <div>
+                <button mat-raised-button color="primary" [disabled]="formGroup.invalid" (click)="buttonClicked()">Create Room</button>
+            </div>
+        </form>
+    </mat-step>
+</mat-horizontal-stepper>

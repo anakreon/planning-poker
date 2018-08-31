@@ -2,18 +2,15 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
-    selector: 'app-dashboard-tab',
-    templateUrl: './dashboard-tab.component.html',
-    styleUrls: ['./dashboard-tab.component.css']
+    selector: 'app-dashboard-tab-join',
+    templateUrl: './dashboard-tab-join.component.html',
+    styleUrls: ['./dashboard-tab-join.component.css']
 })
-export class DashboardTabComponent implements OnInit {
-    @Input() public stepLabel: string;
-    @Input() public inputPlaceholder: string;
-    @Input() public buttonLabel: string;
+export class DashboardTabJoinComponent implements OnInit {
     @Output() private actionRequest: EventEmitter<string> = new EventEmitter<string>();
     public formGroup: FormGroup;
 
-    constructor (private formBuilder: FormBuilder) { }
+    constructor (private formBuilder: FormBuilder) {}
 
     ngOnInit () {
         this.formGroup = this.formBuilder.group({

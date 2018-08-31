@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoomService } from '../../room/room.service';
+import { RoomCreationRequest } from '../dashboard-tab-create/dashboard-tab-create.component';
 
 @Component({
     selector: 'app-dashboard',
@@ -11,9 +12,8 @@ export class DashboardComponent {
 
     constructor (private router: Router, private roomService: RoomService) {}
 
-    public createRoom (roomName: string): void {
-        const cardOptions: string[] = ['1', '2', '3', '5', '8', '13', '21', '34', '55', '89'];
-        this.roomService.createRoom(roomName, cardOptions).then((roomId) => {
+    public createRoom (roomCreationRequest: RoomCreationRequest): void {
+        this.roomService.createRoom(roomCreationRequest.roomName, roomCreationRequest.roomOptions.cards).then((roomId) => {
             this.joinRoom(roomId);
         });
     }

@@ -1,0 +1,5 @@
+<mat-button-toggle-group multiple="true" (change)="onCardsToggle($event)" [value]="cardOptions">
+    <mat-button-toggle *ngFor="let cardValue of allCardsSelection" [value]="cardValue">
+        {{cardValue}}
+    </mat-button-toggle>
+</mat-button-toggle-group>
