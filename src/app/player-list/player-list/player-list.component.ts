@@ -5,9 +5,16 @@ export interface ChangeRoleRequest {
     role: string;
 }
 
+export interface EvictionRequest {
+    playerId: string;
+}
+
 export interface Player {
     id: string;
+    name: string;
     role: string;
+    vote: string;
+    status: boolean;
 }
 
 @Component({
@@ -21,6 +28,7 @@ export class PlayerListComponent {
     @Input() public shouldShowVotes: boolean;
     @Input() public shouldShowMenu: boolean;
     @Output() changeRoleRequest: EventEmitter<ChangeRoleRequest> = new EventEmitter<ChangeRoleRequest>();
+    @Output() evictionRequest: EventEmitter<EvictionRequest> = new EventEmitter<EvictionRequest>();
 
     public isCurrentPlayer (player: Player): boolean {
         return player.id === this.currentPlayerId;
@@ -28,5 +36,9 @@ export class PlayerListComponent {
 
     public changeRole (request: ChangeRoleRequest): void {
         this.changeRoleRequest.emit(request);
+    }
+
+    public removePlayer (request: EvictionRequest): void {
+        this.evictionRequest.emit(request);
     }
 }

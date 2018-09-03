@@ -9,6 +9,7 @@ import { RoomMasterService } from '../../backend/room-master.service';
 import { AppMasterService } from '../../backend/app-master.service';
 import { PlayerSessionService } from '../../shared/player-session.service';
 import { PlayerStatusService } from '../../shared/player-status.service';
+import { DialogEvictedFromRoomComponent } from '../../dialog/dialog-evicted-from-room/dialog-evicted-from-room.component';
 
 @Component({
     selector: 'app-room-loader',
@@ -22,6 +23,7 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
 
     private appMasterSubscription: Subscription;
     private roomMasterSubscription: Subscription;
+    private playerInRoomSubscription: Subscription;
     private playerOnlineSubscription: Subscription;
 
     constructor (
@@ -48,6 +50,9 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
         if (this.roomMasterSubscription) {
             this.roomMasterSubscription.unsubscribe();
         }
+        if (this.playerInRoomSubscription) {
+            this.playerInRoomSubscription.unsubscribe();
+        }
         if (this.playerOnlineSubscription) {
             this.playerOnlineSubscription.unsubscribe();
         }
@@ -62,7 +67,11 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
             .subscribe((didMaintenance) => {
                 console.log('room master results: ', didMaintenance);
             });
-
+        this.playerInRoomSubscription = this.roomService.getPlayer(this.room.id, playerId)
+            .subscribe(() => {}, () => {
+                this.router.navigate(['dashboard']);
+                this.showEvictedDialog();
+            });
         this.playerOnlineSubscription = this.playerStatusService.getPlayerOnlineStatus(playerId)
             .pipe(
                 filter((status: boolean) => !status)
@@ -95,7 +104,15 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getPlayerNameFromDialog (defaultPlayerName: string) {
+    private showEvictedDialog (): Promise<void> {
+        const dialogRef = this.dialog.open(DialogEvictedFromRoomComponent, {
+            height: '260px',
+            width: '275px'
+        });
+        return dialogRef.afterClosed().toPromise();
+    }
+
+    private getPlayerNameFromDialog (defaultPlayerName: string): Promise<string> {
         const dialogRef = this.dialog.open(DialogGetPlayerNameComponent, {
             height: '260px',
             width: '275px',

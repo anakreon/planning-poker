@@ -3,5 +3,6 @@
     [currentPlayerId]="currentPlayerId" 
     [shouldShowVotes]="!((room | async)?.canVote)"
     [shouldShowMenu]="isCurrentPlayerModerator | async"
-    (changeRoleRequest)="changeRole($event)">
+    (changeRoleRequest)="changeRole($event)"
+    (evictionRequest)="removePlayer($event)">
 </app-player-list>

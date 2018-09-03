@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Player, RoomService, Room } from '../room.service';
-import { ChangeRoleRequest } from '../../player-list/player-list/player-list.component';
+import { ChangeRoleRequest, EvictionRequest } from '../../player-list/player-list/player-list.component';
 import { Constant } from '../../shared/constant.service';
 
 @Component({
@@ -30,6 +30,10 @@ export class RoomPlayerListComponent implements OnInit {
 
     public changeRole (request: ChangeRoleRequest): void {
         this.roomService.changePlayerRole(this.roomId, request.playerId, request.role);
+    }
+
+    public removePlayer (request: EvictionRequest): void {
+        this.roomService.removePlayerFromRoom(this.roomId, request.playerId);
     }
 
 }

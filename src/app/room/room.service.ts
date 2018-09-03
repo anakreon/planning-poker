@@ -60,6 +60,12 @@ export class RoomService {
             });
     }
 
+    public removePlayerFromRoom (roomId: string, playerId: string): Promise<void> {
+        return this.firestoreService.deleteNestedDocument(
+            this.constant.collection.rooms, roomId, this.constant.collection.players, playerId
+        );
+    }
+
     public createNewPlayerForRoom (roomId: string, playerName: string): Promise<Player> {
         return this.confirmRoomExists(roomId).then(() => {
             return this.createPlayerRole(roomId).then((role: string) => {

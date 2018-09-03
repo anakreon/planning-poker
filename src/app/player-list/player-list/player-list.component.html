@@ -5,7 +5,13 @@
             [shouldShowVote]="shouldShowVotes"
             [shouldShowMenu]="shouldShowMenu"
             [ngClass]="{ 'current-player': isCurrentPlayer(player) }">
-            <app-player-list-menu *ngIf="shouldShowMenu" [playerId]="player.id" [currentRole]="player.role" (changeRoleRequest)="changeRole($event)"></app-player-list-menu>
+            <app-player-list-menu *ngIf="shouldShowMenu" 
+                [playerId]="player.id" 
+                [currentRole]="player.role" 
+                [isCurrentPlayer]="isCurrentPlayer(player)" 
+                (changeRoleRequest)="changeRole($event)" 
+                (evictionRequest)="removePlayer($event)">
+            </app-player-list-menu>
         </app-player-list-item>
     </ul>
 </mat-card>

@@ -22,7 +22,7 @@ import { NavbarComponent } from './navbar/navbar.component';
     ],
     declarations: [
         AppComponent,
-        NavbarComponent,
+        NavbarComponent
     ],
     bootstrap: [
         AppComponent

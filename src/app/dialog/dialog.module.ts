@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material';
 
 import { DialogGetPlayerNameComponent } from './dialog-get-player-name/dialog-get-player-name.component';
+import { DialogEvictedFromRoomComponent } from './dialog-evicted-from-room/dialog-evicted-from-room.component';
 
 @NgModule({
     imports: [
@@ -16,7 +17,8 @@ import { DialogGetPlayerNameComponent } from './dialog-get-player-name/dialog-ge
         MatInputModule
     ],
     declarations: [
-        DialogGetPlayerNameComponent
+        DialogGetPlayerNameComponent,
+        DialogEvictedFromRoomComponent
     ],
     providers: [{
         provide: MAT_DIALOG_DEFAULT_OPTIONS,
@@ -25,10 +27,12 @@ import { DialogGetPlayerNameComponent } from './dialog-get-player-name/dialog-ge
         }
     }],
     exports: [
-        DialogGetPlayerNameComponent
+        DialogGetPlayerNameComponent,
+        DialogEvictedFromRoomComponent
     ],
     entryComponents: [
-        DialogGetPlayerNameComponent
+        DialogGetPlayerNameComponent,
+        DialogEvictedFromRoomComponent
     ]
 })
 export class DialogModule { }

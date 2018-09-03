@@ -2,6 +2,7 @@
     <ng-container *ngFor="let role of allRoles">
         <button mat-menu-item *ngIf="!isCurrentRole(role)" (click)="changeToRole(role)">Change to {{role}}</button>
     </ng-container>
+    <button mat-menu-item *ngIf="!isCurrentPlayer" (click)="removePlayer(role)">Evict player</button>
 </mat-menu>
 
 <button mat-icon-button [matMenuTriggerFor]="appMenu">
