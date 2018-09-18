@@ -69,7 +69,6 @@ export class RoomLoaderComponent implements OnInit, OnDestroy {
             });
         this.playerInRoomSubscription = this.roomService.getPlayer(this.room.id, playerId)
             .subscribe(() => {}, () => {
-                this.router.navigate(['dashboard']);
                 this.showEvictedDialog();
             });
         this.playerOnlineSubscription = this.playerStatusService.getPlayerOnlineStatus(playerId)
